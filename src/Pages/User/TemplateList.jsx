@@ -102,9 +102,14 @@ export default function TemplateList() {
 
 
   return (
-    <div className="flex h-screen bg-[#ebe9e9]">
+    <div className="flex h-screen">
       <Sidebar />
-      <div className="container bg-white p-8 shadow-lg">
+
+      <div className="container p-8 " style={{
+          borderRadius: "20px",
+          background: "#F9F9F9",
+          marginTop: "2%",
+        }}>
         <div className="row w-full">
           <div className="nk-block-head-content flex justify-between items-center w-full p-4">
             <div className="flex items-center">

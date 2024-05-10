@@ -1,10 +1,3 @@
-// import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import Login from "./Pages/Auth/Login";
-// import Register from "./Pages/Auth/Register";
-// import Home from "./Pages/User/Home";
-// import Template from "./Pages/User/Template";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
-// import Dashboard from "./Pages/Admin/Dashboard";
 import Models from "./Pages/Admin/Models";
 import Queries from "./Pages/Admin/Queries";
 import Newtemplate from "./Pages/Admin/Newtemplate";
@@ -22,6 +15,7 @@ import CreateTemplate from "./Pages/User/CreateTemplate";
 import TemplateList from "./Pages/User/TemplateList";
 import UpdateTemplate from "./Pages/User/UpdateTemplate";
 import ScopSettings from "./Pages/User/ScopSettings";
+import UserModel from "./Pages/User/UserModel";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -39,6 +33,7 @@ import Helpers from "./Config/Helpers";
 import Addteam from "./Pages/User/Addteam";
 import SentMails from "./Pages/User/SentMails";
 import Profile from "./Pages/User/Profile";
+import Collection from "./Pages/User/Collection";
 function App() {
   // const clientId =
   //   "371366179768-olq6fq6do1lg8eqcuv99qjev930k19lm.apps.googleusercontent.com";
@@ -100,7 +95,7 @@ function App() {
 
   return (
     <>
-      <GoogleOAuthProvider clientId="341429096489-e24lk8sq54ku9blm9o68v558pqces2mo.apps.googleusercontent.com">
+      {/* <GoogleOAuthProvider clientId="341429096489-06ui4vadr34mvdf28e27e0fktvarjlbh.apps.googleusercontent.com"> */}
         <div className="nk-app-root" data-sidebar-collapse="lg">
           {/* <RouterProvider router={router} /> */}
           <BrowserRouter>
@@ -161,6 +156,22 @@ function App() {
                   </Auth>
                 }
               />
+               <Route
+                path="/user/collection"
+                element={
+                  <Auth>
+                    <Collection />
+                  </Auth>
+                }
+              />
+              <Route
+                path="/user/model"
+                element={
+                  <Auth>
+                    <UserModel />
+                  </Auth>
+                }
+              />
               <Route
                 path="/user/store"
                 element={
@@ -186,7 +197,7 @@ function App() {
                 }
               />
                <Route
-                path="/user/scop-settings"
+                path="/user/scope-settings"
                 element={
                   <Auth>
                     <ScopSettings />
@@ -308,7 +319,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </div>
-      </GoogleOAuthProvider>
+      {/* </GoogleOAuthProvider> */}
     </>
   );
 }

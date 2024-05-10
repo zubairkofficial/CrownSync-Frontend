@@ -325,7 +325,7 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
-        <a
+        {/* <a
           href="#"
           className="text-gary-400 group relative rounded-xl p-2 hover:bg-gray-50"
         >
@@ -342,8 +342,8 @@ export default function Sidebar() {
               Calender <span className="text-gray-400"></span>
             </div>
           </div>
-        </a>
-        <a
+        </a> */}
+        {/* <a
           href="#"
           className="text-gary-400 group relative rounded-xl p-2 hover:bg-gray-50"
         >
@@ -360,7 +360,37 @@ export default function Sidebar() {
               Analysis <span className="text-gray-400"></span>
             </div>
           </div>
-        </a>
+        </a> */}
+        <Link
+          to="/user/collection"
+          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+        >
+          <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
+          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+              <div className="absolute inset-0 -left-1 flex items-center">
+                <div className="h-2 w-2 rotate-45 bg-white"></div>
+              </div>
+              Collections <span className="text-gray-400"></span>
+            </div>
+          </div>
+        </Link>
+        <Link
+          to="/user/model"
+          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+        >
+          <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
+          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+              <div className="absolute inset-0 -left-1 flex items-center">
+                <div className="h-2 w-2 rotate-45 bg-white"></div>
+              </div>
+              Model <span className="text-gray-400"></span>
+            </div>
+          </div>
+        </Link>
         <Link
           to="/user/addusers"
           className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
@@ -407,17 +437,17 @@ export default function Sidebar() {
           </div>
         </Link>
         <Link
-          to="/user/scop-settings"
+          to="/user/scope-settings"
           className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
           style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
         >
-          <i className="fa-solid fa-gear" style={{ fontSize: "20px" }}></i>
+          <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
           <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
             <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
               <div className="absolute inset-0 -left-1 flex items-center">
                 <div className="h-2 w-2 rotate-45 bg-white"></div>
               </div>
-              Scop Settings <span className="text-gray-400"></span>
+              Scope Settings <span className="text-gray-400"></span>
             </div>
           </div>
         </Link>

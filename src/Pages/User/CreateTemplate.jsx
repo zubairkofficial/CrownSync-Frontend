@@ -83,10 +83,14 @@ function CreateTemplate() {
     return (
         <>
             {/* <Sidebar /> */}
-            <div className="flex  bg-[#ebe9e9]">
+            <div className="flex">
                 <Sidebar />
-                <div className="container bg-white p-8 shadow-lg">
-                    <div className="shadow-lg p-3">
+                <div className="container p-8" style={{
+          borderRadius: "20px",
+          background: "#F9F9F9",
+          marginTop: "2%",
+        }}>
+                    <div className=" p-3 !bg-[#F9F9F9]">
 
                         {/* <div className="nk-main border-2 ">
 
@@ -98,7 +102,7 @@ function CreateTemplate() {
                                     <div className="nk-block-head nk-page-head">
                                         <div className="nk-block-head-between">
                                             <div className="row w-full">
-                                                <div className="nk-block-head-content flex justify-between items-center w-full bg-gray-200 p-4">
+                                                <div className="nk-block-head-content flex justify-between items-center w-ful p-4">
                                                     {/* Left side: "Create Template" title */}
                                                     <div className="flex items-cente">
                                                         <h2 className="display-6">Create Template</h2>
@@ -106,7 +110,7 @@ function CreateTemplate() {
 
                                                     {/* Right side: "Back" button */}
                                                     <div >
-                                                        <button onClick={() => window.history.back()} className="btn bg-[#E2545E] hover:bg-[#df7980] py-2 px-3 text-gray-600 hover:text-gray-900 focus:outline-none">
+                                                        <button onClick={() => window.history.back()} className="btn bg-[#E2545E] hover:bg-[#df7980] py-2 px-3 !text-white hover:text-gray-900 focus:outline-none">
                                                             Back
                                                         </button>
                                                     </div>
@@ -118,8 +122,8 @@ function CreateTemplate() {
                                     {/* <form> */}
 
                                     <div className="row">
-                                        <div className="card shadown-none col-md-8">
-                                            <div className="card-body">
+                                        <div className="card col-md-8 bg-[#F9F9F9]">
+                                            <div className="card-body ">
                                                 <div className="row g-3 gx-gs">
                                                     <div className="col-md-12">
                                                         <div className="form-group">

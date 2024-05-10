@@ -1,5 +1,4 @@
 import React from 'react';
-import { GoogleLogin } from '@react-oauth/google';
 import Helpers from '../../../Config/Helpers';
 import axios from 'axios';
 
@@ -36,12 +35,12 @@ const LoginWithGoogle = () => {
     };
 
     return (
-        <GoogleLogin
-            clientId="341429096489-e24lk8sq54ku9blm9o68v558pqces2mo.apps.googleusercontent.com"
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
-            scope="profile email https://www.googleapis.com/auth/userinfo.email"
-        />
+        <></>
+        // <GoogleLogin
+        //     clientId="341429096489-e24lk8sq54ku9blm9o68v558pqces2mo.apps.googleusercontent.com"
+        //     onSuccess={responseGoogle}
+        //     onFailure={responseGoogle}
+        // />
     );
 };
 

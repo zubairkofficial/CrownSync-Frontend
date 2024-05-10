@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Header from "./../../Components/Header";
 import Sidebar from "./../../Components/Sidebar";
-import Footer from "./../../Components/Sidebar";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import BtnSpinner from "./../../Components/BtnSpinner";
 import Helpers from "./../../Config/Helpers";
 import axios from "axios";
 import Select from "react-select";
-import { GoogleLogin  } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Template from "./Template";
-import Send from "./Send";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import GoogleLoginComponent from "../Admin/Components/GoogleLoginComponent";
 import GoogleLoginButton from "../Admin/Components/GoogleLoginButton";
 import Loader from "../Admin/Components/Loader";
-import LoginWithGoogle from "../Admin/Components/LoginWithGoogle";
-import GoogleAuth from "../Admin/Components/GoogleAuth";
 export default function Home() {
   useEffect(() => {
     document.title = "Home - Crownsync AI";
@@ -31,15 +21,22 @@ export default function Home() {
       document.title = "Crownsync Ai";
     };
   }, []);
-  const [inputs, setInputs] = useState({});
-  const [googleLoading, setGoogleLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mails, setMails] = useState([]);
   const [isGoogle, setIsGoogle] = useState(null);
   const [userNotFound, setUserNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const userJson = localStorage.getItem("user");
+
+  const user = JSON.parse(userJson);
+  const userEmail = user ? user.email : null;
+
+  const [emailData, setEmailData] = useState(null);
+  let { messageId } = useParams();
+
+
   useEffect(() => {
     const asyncOperations = [
         new Promise((resolve) => setTimeout(resolve, 1000)), // Example async operation 1
@@ -55,18 +52,10 @@ export default function Home() {
 }, []);
   const url = Helpers.apiUrl;
   const handleLoginSuccess = (response) => {
+    // alert(response);
     // console.log('Login Response:', response);
 
 };
-
-
-const responseMessage = (response) => {
-  console.log(response);
-};
-const errorMessage = (error) => {
-  console.log(error);
-};
-
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -83,7 +72,6 @@ const errorMessage = (error) => {
         });
 
         if (response.status === 200 && response.data.data) {
-          // console.log("my response:", response.data.data.contact);
           setIsGoogle(response.data.data);
           setUserNotFound(false);
         } else {
@@ -109,36 +97,32 @@ const errorMessage = (error) => {
 
   const baseUrl = Helpers.apiUrl;
   const navigate = useNavigate();
-  // const loginWithGoogle = async () => {
-  //   const url = Helpers.apiUrl;
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axios.get(`${url}auth/google`, {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
 
-  //     if (response.status === 200 && response.data.data) {
-  //       // console.log("my response:", response.data.data);
-      
-
-  //     } 
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 404) {
- 
-  //     } else {
-  //       // Handle other errors
-  //       console.error("Error fetching details:", error);
-  //     }
-  //   }
-  // }
   const loginWithGoogle = () => {
+   // Retrieve the user data from localStorage
+const userString = localStorage.getItem('user');
+
+// Parse it into an object, if the data is not null
+let user = null;
+if (userString) {
+  try {
+    user = JSON.parse(userString);
+  } catch (error) {
+    console.error('Error parsing user data:', error);
+  }
+}
+
+// Access and log the user id
+if (user && user.id) {
+  console.log('User ID:', user.id);
+} else {
+  console.log('User data is missing or does not contain an id.');
+}
+    const userId = localStorage.getItem('user_id'); // Retrieve the stored user ID
     const backendURL = Helpers.backendUrl;
-    window.location.href = `${backendURL}auth/redirect`;
-  };
+    window.location.href = `${backendURL}auth/redirect?userId=${user.id}`; // Pass only the user ID
+};
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -188,22 +172,6 @@ const errorMessage = (error) => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const userJson = localStorage.getItem("user");
-
-  // Parse the JSON string to an object
-  const user = JSON.parse(userJson);
-  // console.log('user data',user);
-
-  // Access the email property of the user object
-  const userEmail = user ? user.email : null;
-
-
-  const [collection_id, setCollection] = useState("");
-
-  const [emailData, setEmailData] = useState(null);
-  let { messageId } = useParams();
-  // console.log(messageId,'message id bro');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1262,12 +1230,7 @@ useEffect(() => {
                    <div>
                    {/* <GoogleLoginComponent onLoginSuccess={handleLoginSuccess} /> */}
                    <GoogleLoginButton onLoginClick={loginWithGoogle} />
-                   <div>
-                        <h1>Welcome to Our Application</h1>
-                        <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
-                    </div>
                    </div>
-                   
                   ) : (
                     <>
                     <div>
@@ -1743,4 +1706,3 @@ useEffect(() => {
     </>
   );
 }
-                                    

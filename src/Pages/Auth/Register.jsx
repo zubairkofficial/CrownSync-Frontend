@@ -85,8 +85,8 @@ export default function Register() {
       if (response.status === 200) {
         Helpers.setItem("user", response.data.user, true);
         Helpers.setItem("token", response.data.token);
-        navigate("/user/dashboard");
-        Helpers.toast("success", "Registration successful");
+        navigate("/");
+        Helpers.toast("success", "Registration Successful");
       } else {
         Helpers.toast("error", "An unexpected error occurred");
       }

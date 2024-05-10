@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Helpers from '../../Config/Helpers';
 import Sidebar from '../../Components/Sidebar';
 import axios from "axios";
+import { toast, ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Location = () => {
     const [location, setLocation] = useState('');
     const [locations, setLocations] = useState([]);
+    const [editingLocationId, setEditingLocationId] = useState(null);
 
     const fetchLocations = async () => {
         try {
@@ -21,15 +24,118 @@ const Location = () => {
 
             if (response.status === 200) {
                 const fetchedLocations = response.data.data || [];
-                console.log("API locations:", fetchedLocations);
                 setLocations(fetchedLocations);
             } else {
-                console.log("Received non-200 response:", response.status);
                 setLocations([]);  // Set to empty array on error
             }
         } catch (error) {
-            console.error("Error fetching location data:", error);
+            Helpers.toast("error", "Error fetching locations. Please try again later.");
             setLocations([]);  // Set to empty array on error
+        }
+    };
+
+    const handleDelete = async (locationId) => {
+        toast.info(
+            <div>
+                <p>Are you sure you want to delete this location?</p>
+                <button onClick={() => confirmDelete(locationId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
+                <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
+            </div>,
+            {
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                position: "top-center",
+                transition: Slide,
+            }
+        );
+    };
+
+    const confirmDelete = async (locationId) => {
+        const baseUrl = Helpers.apiUrl;
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.delete(`${baseUrl}delete-location/${locationId}`, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                toast.dismiss();
+                Helpers.toast("success", "Location Deleted Successfully");
+                setLocations((locations) => locations.filter((loc) => loc.id !== locationId));
+            }
+        } catch (error) {
+            toast.dismiss();
+            Helpers.toast("error", "An error occurred during deletion");
+        }
+    };
+
+    const handleEdit = (loc) => {
+        setLocation(loc.location);
+        setEditingLocationId(loc.id);
+    };
+
+    const handleSave = async () => {
+        const baseUrl = Helpers.apiUrl;
+        const token = localStorage.getItem("token");
+
+        if (!location.trim()) {
+            Helpers.toast("error", "Please enter a location name");
+            return;
+        }
+
+        if (editingLocationId) {
+            // Update existing location
+            try {
+                const response = await axios.put(`${baseUrl}update-location/${editingLocationId}`, {
+                    location
+                }, {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    Helpers.toast("success", "Location Updated Successfully");
+                    fetchLocations();
+                    setEditingLocationId(null);
+                    setLocation("");
+                } else {
+                    Helpers.toast("error", "Error updating location. Please try again later.");
+                }
+            } catch (error) {
+                Helpers.toast("error", "Error updating location. Please try again later.");
+            }
+        } else {
+            // Add a new location
+            try {
+                const response = await fetch(`${baseUrl}add-location`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ location })
+                });
+
+                if (response.status === 200) {
+                    Helpers.toast("success", "Location Saved Successfully");
+                    setLocation("");
+                    fetchLocations();
+                } else {
+                    Helpers.toast("error", "Error saving location. Please try again later.");
+                }
+            } catch (error) {
+                Helpers.toast("error", "Error saving location. Please try again later.");
+            }
         }
     };
 
@@ -37,42 +143,18 @@ const Location = () => {
         fetchLocations();
     }, []);
 
-    const handleSubmit = async () => {
-        if (!location.trim()) {
-            Helpers.toast("error", "Please enter a location");
-            return;
-        }
-
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${baseUrl}add-location`, {
-            method: 'POST',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ location }),
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
-            Helpers.toast('success', "Location Saved Successfully!");
-            setLocation("");
-            fetchLocations();  // Update the list after successful submission
-        } else {
-            Helpers.toast("error", "Error saving location. Please try again later.");
-        }
-    };
-
     return (
-        <div className="flex h-screen bg-gray-200">
+        <div className="flex h-screen">
             <Sidebar />
-            <div className="container mx-auto my-6 flex flex-col md:flex-row gap-8 p-4 bg-white shadow-lg rounded-lg">
+            <ToastContainer />
+            <div className="container mx-auto flex flex-col md:flex-row gap-8 p-4" style={{
+                borderRadius: "20px",
+                background: "#F9F9F9",
+                marginTop: "2%",
+            }}>
                 {/* Form Section */}
-                <div className="flex-1 m-6">
-                    <h2 className="text-3xl font-bold mb-4">Create Location</h2>
+                <div className="flex-1 m-7">
+                    <h2 className="text-3xl font-bold mb-4">{editingLocationId ? "Edit Location" : "Create Location"}</h2>
                     <div className="flex space-x-2 mb-4">
                         <input
                             type="text"
@@ -82,10 +164,10 @@ const Location = () => {
                             className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
-                            onClick={handleSubmit}
+                            onClick={handleSave}
                             className="bg-[#f36b74] !text-white font-bold px-4 py-2 rounded-md hover:bg-[#fa9198] transition-colors"
                         >
-                            Submit
+                            {editingLocationId ? "Update" : "Submit"}
                         </button>
                     </div>
                 </div>
@@ -98,6 +180,7 @@ const Location = () => {
                             <tr className="bg-blue-100">
                                 <th className="border px-4 py-2">#</th>
                                 <th className="border px-4 py-2">Location</th>
+                                <th className="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,11 +189,19 @@ const Location = () => {
                                     <tr key={index} className="hover:bg-gray-100">
                                         <th className="border px-4 py-2">{index + 1}</th>
                                         <td className="border px-4 py-2">{loc.location}</td>
+                                        <td className="border px-4 py-2">
+                                            <button className="p-2 " onClick={() => handleEdit(loc)}>
+                                            <i className="fa-light fa-pencil"></i>
+                                            </button>
+                                            <button className="p-2 " onClick={() => handleDelete(loc.id)}>
+                                            <i className="fa-light fa-trash-can"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td className="border px-4 py-2" colSpan="2">
+                                    <td className="border px-4 py-2" colSpan="3">
                                         No locations found.
                                     </td>
                                 </tr>

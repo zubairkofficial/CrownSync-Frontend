@@ -29,12 +29,13 @@ function GoogleAuth() {
     };
 
     return (
-        <GoogleOAuthProvider clientId="341429096489-e24lk8sq54ku9blm9o68v558pqces2mo.apps.googleusercontent.com">
-            <GoogleLogin
-                onSuccess={handleLoginSuccess}
-                onError={handleLoginFailure}
-            />
-        </GoogleOAuthProvider>
+        <></>
+        // <GoogleOAuthProvider clientId="341429096489-e24lk8sq54ku9blm9o68v558pqces2mo.apps.googleusercontent.com">
+        //     <GoogleLogin
+        //         onSuccess={handleLoginSuccess}
+        //         onError={handleLoginFailure}
+        //     />
+        // </GoogleOAuthProvider>
     );
 }
 

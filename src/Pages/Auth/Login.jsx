@@ -21,57 +21,57 @@ export default function Login() {
     const baseUrl = Helpers.apiUrl;
     const navigate = useNavigate();
 
-    const loginWithGoogle = useGoogleLogin({
-        scope: 'https://www.googleapis.com/auth/userinfo.email https://mail.google.com/',
-        onSuccess: async (tokenResponse) => {
-            setIsLoading(true);
-            setGoogleLoading(true);
-            try {
-                let data = { token: tokenResponse.access_token };
-                // Adding await here to wait for the request to complete
-                const response = await axios.post(`${baseUrl}auth/google`, data, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    }
-                });
+    // const loginWithGoogle = useGoogleLogin({
+    //     scope: 'https://www.googleapis.com/auth/userinfo.email https://mail.google.com/',
+    //     onSuccess: async (tokenResponse) => {
+    //         setIsLoading(true);
+    //         setGoogleLoading(true);
+    //         try {
+    //             let data = { token: tokenResponse.access_token };
+    //             // Adding await here to wait for the request to complete
+    //             const response = await axios.post(`${baseUrl}auth/google`, data, {
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 }
+    //             });
 
-                if (response.status === 200) {
-                    Helpers.setItem("user", response.data.user, true);
-                    Helpers.setItem("token", response.data.token);
-                    console.log(response.data.user);
+    //             if (response.status === 200) {
+    //                 Helpers.setItem("user", response.data.user, true);
+    //                 Helpers.setItem("token", response.data.token);
+    //                 console.log(response.data.user);
 
-                    // window.location.href = "/user/dashboard";
-                    navigate("/user/dashboard")
-                } else {
-                    // It's more common to handle non-200 responses in the catch block
-                    console.log("Received non-200 response:", response.status);
-                }
-            } catch (error) {
-                setIsLoading(false);
-                setGoogleLoading(false);
-                // Improved error handling
-                if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    console.error("Error data:", error.response.data);
-                    console.error("Error status:", error.response.status);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.error("No response received:", error.request);
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.error("Error message:", error.message);
-                }
-            }
-        },
-        onError: error => {
-            // Handle error
-            console.error("Login with Google error:", error);
-            setIsLoading(false);
-            setGoogleLoading(false);
-        }
-    });
+    //                 // window.location.href = "/user/dashboard";
+    //                 navigate("/user/dashboard")
+    //             } else {
+    //                 // It's more common to handle non-200 responses in the catch block
+    //                 console.log("Received non-200 response:", response.status);
+    //             }
+    //         } catch (error) {
+    //             setIsLoading(false);
+    //             setGoogleLoading(false);
+    //             // Improved error handling
+    //             if (error.response) {
+    //                 // The request was made and the server responded with a status code
+    //                 // that falls out of the range of 2xx
+    //                 console.error("Error data:", error.response.data);
+    //                 console.error("Error status:", error.response.status);
+    //             } else if (error.request) {
+    //                 // The request was made but no response was received
+    //                 console.error("No response received:", error.request);
+    //             } else {
+    //                 // Something happened in setting up the request that triggered an Error
+    //                 console.error("Error message:", error.message);
+    //             }
+    //         }
+    //     },
+    //     onError: error => {
+    //         // Handle error
+    //         console.error("Login with Google error:", error);
+    //         setIsLoading(false);
+    //         setGoogleLoading(false);
+    //     }
+    // });
 
 
     const handleChange = (e) => {
@@ -95,6 +95,8 @@ export default function Login() {
                 // console.log(response.data);
                 localStorage.setItem('token', response.data.token); // Assuming the token is in response.data.token
                 Helpers.setItem('user', response.data.user, true)
+                Helpers.setItem('user_id', response.data.user.id,true); // Save only the user ID
+
 
                 const ttoken = localStorage.setItem('token', response.data.token);
                 // console.log(ttoken, response.data.user);

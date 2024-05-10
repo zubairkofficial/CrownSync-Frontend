@@ -131,7 +131,7 @@ function Addteam() {
 const handleDelete = async (templateId) => {
   toast.info(
       <div>
-          <p>Are you sure you want to delete this template?</p>
+          <p>Are you sure you want to delete this team member?</p>
           <button onClick={() => confirmDelete(templateId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
           <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
       </div>,

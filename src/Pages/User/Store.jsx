@@ -2,41 +2,118 @@ import React, { useState, useEffect } from 'react';
 import Helpers from '../../Config/Helpers';
 import Sidebar from '../../Components/Sidebar';
 import axios from "axios";
+import { toast, ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Store = () => {
     const [name, setName] = useState('');
-    const [location, setLocation] = useState('');
-    const [locations, setLocations] = useState([]);
     const [stores, setStores] = useState([]);
+    const [editingStoreId, setEditingStoreId] = useState(null);
 
-    const handleSubmit = async () => {
+    const handleDelete = async (storeId) => {
+        toast.info(
+            <div>
+                <p>Are you sure you want to delete this store?</p>
+                <button onClick={() => confirmDelete(storeId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
+                <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
+            </div>,
+            {
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                position: "top-center",
+                transition: Slide,
+            }
+        );
+    };
+
+    const confirmDelete = async (storeId) => {
+        const baseUrl = Helpers.apiUrl;
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.delete(`${baseUrl}delete-store/${storeId}`, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                toast.dismiss();
+                Helpers.toast("success", "Store Deleted Successfully");
+                setStores((stores) => stores.filter((store) => store.id !== storeId));
+            }
+        } catch (error) {
+            toast.dismiss();
+            Helpers.toast("error", "An error occurred during deletion");
+        }
+    };
+
+    const handleEdit = (store) => {
+        setName(store.name);
+        setEditingStoreId(store.id);
+    };
+
+    const handleSave = async () => {
+        const baseUrl = Helpers.apiUrl;
+        const token = localStorage.getItem("token");
+
         if (!name.trim()) {
             Helpers.toast("error", "Please enter a store name");
             return;
         }
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${baseUrl}add-store`, {
-            method: 'POST',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ name })
-        });
-        if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
-            Helpers.toast('success', "Store Saved Successfully!");
-            setName("");
-            fetchStores(); 
-        }
-        else {
-            Helpers.toast("error", "Error saving store. Please try again later.");
+
+        if (editingStoreId) {
+            // Update existing store
+            try {
+                const response = await axios.put(`${baseUrl}update-store/${editingStoreId}`, {
+                    name
+                }, {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    Helpers.toast("success", "Store Updated Successfully");
+                    fetchStores();
+                    setEditingStoreId(null);
+                    setName("");
+                } else {
+                    Helpers.toast("error", "Error updating store. Please try again later.");
+                }
+            } catch (error) {
+                Helpers.toast("error", "Error updating store. Please try again later.");
+            }
+        } else {
+            // Add a new store
+            try {
+                const response = await fetch(`${baseUrl}add-store`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                if (response.status === 200) {
+                    Helpers.toast("success", "Store Saved Successfully");
+                    setName("");
+                    fetchStores();
+                } else {
+                    Helpers.toast("error", "Error saving store. Please try again later.");
+                }
+            } catch (error) {
+                Helpers.toast("error", "Error saving store. Please try again later.");
+            }
         }
     };
-  
 
     const fetchStores = async () => {
         try {
@@ -51,19 +128,15 @@ const Store = () => {
             });
 
             if (response.status === 200) {
-
                 const fetchedStores = response.data.data || [];
-
-             setStores(fetchedStores);
-             Helpers.toast('success', "Fetch Stores Successfully!");
+                setStores(fetchedStores);
+                // Helpers.toast("success", "Fetch Stores Successfully");
             } else {
-                console.log("Received non-200 response:", response.status);
-                setStores([]);  // Set to empty array on error
+                setStores([]); // Set to empty array on error
             }
         } catch (error) {
-            console.error("Error fetching location data:", error);
-            Helpers.toast("error", "Error saving store. Please try again later.");
-            setStores([]);  // Set to empty array on error
+            Helpers.toast("error", "Error fetching stores. Please try again later.");
+            setStores([]); // Set to empty array on error
         }
     };
 
@@ -71,33 +144,36 @@ const Store = () => {
         fetchStores();
     }, []);
 
-
     return (
-        <div className="flex h-screen bg-gray-200">
+        <div className="flex h-screen">
             <Sidebar />
-            <div className="container mx-auto my-6 flex flex-col md:flex-row gap-8 p-4 bg-white shadow-lg rounded-lg">
+            <ToastContainer />
+            <div className="container mx-auto flex flex-col md:flex-row gap-8 p-4" style={{
+                borderRadius: "20px",
+                background: "#F9F9F9",
+                marginTop: "2%",
+            }}>
                 {/* Form Section */}
-                <div className="flex-1 m-6">
-                    <h2 className="text-3xl font-bold mb-4">Create Store</h2>
+                <div className="flex-1 m-7">
+                    <h2 className="text-3xl font-bold mb-4">{editingStoreId ? "Edit Store" : "Create Store"}</h2>
                     <div className="flex space-x-2 mb-4">
                         <input
                             type="text"
-                         
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             placeholder="Enter Store Name..."
                             className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
-                            onClick={handleSubmit}
+                            onClick={handleSave}
                             className="bg-[#f36b74] !text-white font-bold px-4 py-2 rounded-md hover:bg-[#fa9198] transition-colors"
                         >
-                            Submit
+                            {editingStoreId ? "Update" : "Submit"}
                         </button>
                     </div>
                 </div>
 
-                {/* Locations Table Section */}
+                {/* Stores Table Section */}
                 <div className="flex-1 m-6">
                     <h2 className="text-3xl font-bold mb-4">Stores List</h2>
                     <table className="table-auto w-full border border-gray-300">
@@ -105,6 +181,7 @@ const Store = () => {
                             <tr className="bg-blue-100">
                                 <th className="border px-4 py-2">#</th>
                                 <th className="border px-4 py-2">Store Name</th>
+                                <th className="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,11 +190,19 @@ const Store = () => {
                                     <tr key={index} className="hover:bg-gray-100">
                                         <th className="border px-4 py-2">{index + 1}</th>
                                         <td className="border px-4 py-2">{store.name}</td>
+                                        <td className="border px-4 py-2">
+                                            <button className="p-2 " onClick={() => handleEdit(store)}>
+                                            <i className="fa-light fa-pencil"></i>
+                                            </button>
+                                            <button className="p-2 " onClick={() => handleDelete(store.id)}>
+                                            <i className="fa-light fa-trash-can"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td className="border px-4 py-2" colSpan="2">
+                                    <td className="border px-4 py-2" colSpan="3">
                                         No stores found.
                                     </td>
                                 </tr>
