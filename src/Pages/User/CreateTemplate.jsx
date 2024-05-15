@@ -83,7 +83,7 @@ function CreateTemplate() {
     return (
         <>
             {/* <Sidebar /> */}
-            <div className="flex">
+            <div className="flex text-gray-900 h-[100vh] ">
                 <Sidebar />
                 <div className="container p-8" style={{
           borderRadius: "20px",
@@ -178,6 +178,7 @@ function CreateTemplate() {
                                                         >
                                                             Store Address
                                                         </button>
+                                                        <h1 className="my-1">OUT OF STOCK</h1>
                                                         <button
                                                             onClick={() => insertTag("Collection")}
                                                             className="btn btn-secondary m-1 flex-1 py-2"
@@ -214,29 +215,70 @@ function CreateTemplate() {
                                                         >
                                                             Benefits
                                                         </button>
-                                                        <button
-                                                            onClick={() => insertTag("Store")}
-                                                            className="btn btn-secondary m-1 flex-1 py-2"
-                                                        >
-                                                            Store
-                                                        </button>
-                                                        <button
-                                                            onClick={() => insertTag("Location")}
-                                                            className="btn btn-secondary m-1 flex-1 py-2"
-                                                        >
-                                                            Location
-                                                        </button>
+                                                        
                                                         <button
                                                             onClick={() => insertTag("Price")}
                                                             className="btn btn-secondary m-1 flex-1 py-2"
                                                         >
                                                             Price
                                                         </button>
+                                                        <h1 className="MY-1">IN STOCK MODEL</h1>
                                                         <button
-                                                            onClick={() => insertTag("Stock")}
-                                                            className="btn btn-secondary flex-1 py-2"
+                                                            onClick={() => insertTag("Collection")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
                                                         >
-                                                            Stock
+                                                            Collection Name
+                                                        </button>
+                                                        <button
+                                                            onClick={() => insertTag("Model")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Model Name
+                                                        </button>
+                                                        <button
+                                                            onClick={() => insertTag("Link")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Link
+                                                        </button>
+                                                        <button
+                                                            onClick={() => insertTag("Image")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Image
+                                                        </button>
+                                                        <button
+                                                            onClick={() => insertTag("Features")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Features
+                                                        </button>
+                                                        <button
+                                                            onClick={() => insertTag("Benefits")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Benefits
+                                                        </button>
+                                                        
+                                                        <button
+                                                            onClick={() => insertTag("Price")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Price
+                                                        </button>
+                                                        
+                                                        <button
+                                                            onClick={() => insertTag("Store")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Store
+                                                        </button>
+                                                        
+                                                        <button
+                                                            onClick={() => insertTag("Location")}
+                                                            className="btn btn-secondary m-1 flex-1 py-2"
+                                                        >
+                                                            Location
                                                         </button>
                                                     </div>
                                                     <div className="col-md-12">
@@ -247,7 +289,7 @@ function CreateTemplate() {
                                                             >
                                                                 Add Template
                                                             </label>
-                                                            <div className="form-control-wrap">
+                                                            <div className="form-control white-space text-wrap">
                                                                 <textarea
                                                                     cols="30"
                                                                     rows="10"
@@ -300,7 +342,7 @@ function CreateTemplate() {
                                                     >
                                                         <div
                                                             className="form-group"
-                                                            style={{ marginTop: "2%" }}
+                                                            style={{ marginTop: "2%", whiteSpace:"pre-wrap"}}
                                                         >
                                                             <div className="form-control-wrap">
                                                                 <p>{template_name}</p>

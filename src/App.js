@@ -10,11 +10,12 @@ import Newproduct from "./Pages/Admin/Newproduct";
 import Productupdate from "./Pages/Admin/Productupdate";
 import Queryupdate from "./Pages/Admin/Queryupdate";
 import Store from "./Pages/User/Store";
-import Location from "./Pages/User/Location";
+import Setting from "./Pages/User/Setting";
+import Location from "./Pages/User/StoresAddress";
 import CreateTemplate from "./Pages/User/CreateTemplate";
 import TemplateList from "./Pages/User/TemplateList";
 import UpdateTemplate from "./Pages/User/UpdateTemplate";
-import ScopSettings from "./Pages/User/ScopSettings";
+import ScopSettings from "./Pages/User/Keywords";
 import UserModel from "./Pages/User/UserModel";
 import {
   createBrowserRouter,
@@ -145,6 +146,14 @@ function App() {
                 element={
                   <Auth>
                     <Profile />
+                  </Auth>
+                }
+              />
+              <Route
+                path="/user/Setting"
+                element={
+                  <Auth>
+                    <Setting />
                   </Auth>
                 }
               />

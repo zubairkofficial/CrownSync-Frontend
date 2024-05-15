@@ -5,7 +5,7 @@ import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { toast, ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-function Addteam() {
+const Addteam =({ activeTab, setActiveTab }) => {
   useEffect(() => {
     document.title = "Add Team Members - Crownsync AI";
     // Optionally, set meta description or any other head elements here
@@ -25,30 +25,36 @@ function Addteam() {
     setInputUser(event.target.value);
   };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        console.log(token);
-        const url = Helpers.apiUrl; // Make sure Helpers.apiUrl is defined and correct
-        const response = await axios.get(`${url}userlist`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          console.log(response.data);
-          setUser(response.data.data); // Assuming response.data is an array of users
-        } else {
-          console.log("Error in getting user list");
-        }
-      } catch (error) {
-        console.log("Error", error);
-      }
-    };
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (activeTab === 'AddUser') {      
+    fetchData();
+    }
+  }, [activeTab]);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log(token);
+      const url = Helpers.apiUrl; // Make sure Helpers.apiUrl is defined and correct
+      const response = await axios.get(`${url}userlist`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log(response.data);
+        setUser(response.data.data); // Assuming response.data is an array of users
+      } else {
+        console.log("Error in getting user list");
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
 
   const [team, setTeam] = useState([]);
 
@@ -129,23 +135,6 @@ function Addteam() {
 };
 
 const handleDelete = async (templateId) => {
-  toast.info(
-      <div>
-          <p>Are you sure you want to delete this team member?</p>
-          <button onClick={() => confirmDelete(templateId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
-          <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
-      </div>,
-      {
-          autoClose: false,
-          closeOnClick: false,
-          draggable: false,
-          position: "top-center",
-          transition: Slide,
-      }
-  );
-};
-
-const confirmDelete = async (templateId) => {
   const baseUrl = Helpers.apiUrl;
   const token = localStorage.getItem("token");
 
@@ -175,30 +164,35 @@ const confirmDelete = async (templateId) => {
   
 
   return (
-    <div class="flex text-gray-900">
-      <Sidebar />
-      <ToastContainer />
+    <>
+    <ToastContainer />
       <div
         className="container "
         style={{
           borderRadius: "20px",
-          background: "#F9F9F9",
+          // background: "#F9F9F9",
           marginTop: "2%",
         }}
       >
         <div className="row  mt-5">
           <div className="col-md-6 p-7">
             <h1 className="py-5 text-3xl font-bold">Add Users in the Team</h1>
-            <form onSubmit={handleFormSubmit}>
-              <label htmlFor="" className="py-5">Enter User Name</label>
-                <input type="name" className="form-control" name="user_name" onChange={onUserInputChange} placeholder="User Name"/>
-                <label htmlFor="" className="py-5">Enter User Email</label>
-                <input type="email" className="form-control" name="user_email" onChange={onInputChange} placeholder="User Email"/>
+            <form  onSubmit={handleFormSubmit}>
+            <div className="my-1">
+              
+              <input type="text" name="user_name" onChange={onUserInputChange} placeholder="User Name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "  />
+            </div>
+            <div className="my-1">
+                
+                <input type="text"name="user_email" onChange={onInputChange} placeholder="User Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "  />
+            </div>
+             
+            
              
               <br />
               <button
                 type="submit"
-                className="btn flex-1 py-2"
+                className="btn flex justify-end"
                 style={{
                   background: "#E2545E",
                   color: "white",
@@ -241,7 +235,7 @@ const confirmDelete = async (templateId) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

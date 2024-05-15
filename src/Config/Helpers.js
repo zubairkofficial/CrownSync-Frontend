@@ -4,8 +4,8 @@ import "notyf/notyf.min.css";
 class Helpers {
   static appName = "CrownSync";
   static localhost = "127.0.0.1:8000";
-  // static server = "https://testapi.crownsync.ai";
-  static server = "http://127.0.0.1:8000";
+  static server = "https://testapi.crownsync.ai";
+  // static server = "http://127.0.0.1:8000";
   static basePath = `${this.server}`;
   static apiUrl = `${this.basePath}/api/`;
   static backendUrl = `${this.basePath}/`;
@@ -19,6 +19,20 @@ class Helpers {
       return {};
     }
   })();
+
+  static authHeaders = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  
+  static authFileHeaders = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
 
   // Other static methods...
 

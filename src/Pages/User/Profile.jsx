@@ -309,7 +309,7 @@ useEffect(() => {
                       <span className="font-bold mr-1">Responding Email:</span>
                       {isGoogle ? <p>{isGoogle.contact}</p> : ''}
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between " style={{paddingRight:"10px"}}>
                       <div className="flex-grow">
                         <div className="flex items-center text-gray-900 mb-2">
                           <i className="fas fa-house text-indigo-500 mr-2"></i>
@@ -329,7 +329,7 @@ useEffect(() => {
                           background: "#E2545E",
                           color: "white",
                           position: "absolute",
-                          left: "90%",
+                          left: "80%",
                           top: "25%",
                           transform: "translate(-50%,-50%)"
                         }}

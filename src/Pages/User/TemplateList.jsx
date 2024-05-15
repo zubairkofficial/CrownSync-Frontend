@@ -6,7 +6,7 @@ import Helpers from '../../Config/Helpers';
 import { toast, ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function TemplateList() {
+const TemplateList = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [templates, setTemplate] = useState(null);
@@ -15,66 +15,53 @@ export default function TemplateList() {
     navigate(`/user/templates/update/${templateId}`);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const baseUrl = Helpers.apiUrl;
+      const token = localStorage.getItem("token");
 
-        const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const response = await axios.get(`${baseUrl}admin/mail_templates`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (response.status === 200) {
-          setTemplate(response.data.data);
-        } else {
-          console.log("Received non-200 response:", response.status);
-        }
-      } catch (error) {
-        console.error("An error occurred:", error);
-        // Handle error
-        if (error.response) {
-          // Server responded with a status code outside 2xx range
-          console.error("Error data:", error.response.data);
-          console.error("Error status:", error.response.status);
-        } else if (error.request) {
-          // No response was received to the request
-          console.error("No response received:", error.request);
-        } else {
-          // An error occurred in setting up the request
-          console.error("Error message:", error.message);
-        }
-      } finally {
-        setIsLoading(false);
+      if (response.status === 200) {
+        setTemplate(response.data.data);
+      } else {
+        console.log("Received non-200 response:", response.status);
       }
-    };
-
+    } catch (error) {
+      console.error("An error occurred:", error);
+      // Handle error
+      if (error.response) {
+        // Server responded with a status code outside 2xx range
+        console.error("Error data:", error.response.data);
+        console.error("Error status:", error.response.status);
+      } else if (error.request) {
+        // No response was received to the request
+        console.error("No response received:", error.request);
+      } else {
+        // An error occurred in setting up the request
+        console.error("Error message:", error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, []); // Empty dependency array means this effect runs once after the initial render
-
+  
+  useEffect(() => {
+    if (activeTab === 'TemplateList') {   
+        fetchData();
+    }
+}, [activeTab]);
   const handleDelete = async (templateId) => {
-    toast.info(
-      <div>
-        <p>Are you sure you want to delete this template?</p>
-        <button onClick={() => confirmDelete(templateId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
-        <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
-      </div>,
-      {
-        autoClose: false,
-        closeOnClick: false,
-        draggable: false,
-        position: "top-center",
-        transition: Slide,
-      }
-    );
-  };
-
-  const confirmDelete = async (templateId) => {
     const baseUrl = Helpers.apiUrl;
     const token = localStorage.getItem("token");
 
@@ -102,8 +89,7 @@ export default function TemplateList() {
 
 
   return (
-    <div className="flex h-screen">
-      <Sidebar />
+    <div className="flex">
 
       <div className="container p-8 " style={{
           borderRadius: "20px",
@@ -129,9 +115,9 @@ export default function TemplateList() {
         </div>
         <ToastContainer />
         <div className="nk-block">
-          <div className="card">
-            <table className="table table-middle mb-0">
-              <thead className="table-light">
+          <div className="card p-2">
+            <table className="table table-middle mb-0 p-2">
+              <thead className="table-light p-2">
                 <tr>
                   <th className="tb-col">
                     <h6 className="overline-title">Id</h6>
@@ -156,7 +142,7 @@ export default function TemplateList() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className=" p-2">
                 {templates &&
                   templates.map((template, index) => (
                     <tr key={template.id || index}>
@@ -234,4 +220,6 @@ export default function TemplateList() {
       </div>
     </div>
   )
-}
+};
+
+export default TemplateList;

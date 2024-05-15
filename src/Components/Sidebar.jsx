@@ -11,6 +11,7 @@ export default function Sidebar() {
   // const [isLoading, setIsLoading] = useState(false);
   const [mails, setMails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const baseUrl = Helpers.apiUrl;
   // const loginWithGoogle = useGoogleLogin({
   //   scope:
@@ -303,7 +304,7 @@ export default function Sidebar() {
               <div className="absolute inset-0 -left-1 flex items-center">
                 <div className="h-2 w-2 rotate-45 bg-white"></div>
               </div>
-              Send Mails <span className="text-gray-400"></span>
+              Inbox <span className="text-gray-400"></span>
             </div>
           </div>
         </Link>
@@ -325,147 +326,150 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
-        {/* <a
-          href="#"
+        <Link
+          to="/user/Setting"
           className="text-gary-400 group relative rounded-xl p-2 hover:bg-gray-50"
         >
-          <i
-            className="fa-light fa-calendar-range"
-            style={{ fontSize: "20px", color: "#BBBBBB" }}
-          ></i>
-
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-950 drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
+            <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
+            <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+              <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                <div className="absolute inset-0 -left-1 flex items-center">
+                  <div className="h-2 w-2 rotate-45 bg-white"></div>
+                </div>
+                Setting <span className="text-gray-400"></span>
               </div>
-              Calender <span className="text-gray-400"></span>
             </div>
-          </div>
-        </a> */}
-        {/* <a
-          href="#"
-          className="text-gary-400 group relative rounded-xl p-2 hover:bg-gray-50"
-        >
-          <i
-            className="fa-light fa-chart-mixed"
-            style={{ fontSize: "20px", color: "#BBBBBB" }}
-          ></i>
-
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Analysis <span className="text-gray-400"></span>
-            </div>
-          </div>
-        </a> */}
-        <Link
-          to="/user/collection"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Collections <span className="text-gray-400"></span>
-            </div>
-          </div>
         </Link>
-        <Link
-          to="/user/model"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
+        
+        {/* <div className="relative">
+          <button
+            className="group relative rounded-xl p-2 hover:bg-gray-50 w-full flex justify-between"
+            onClick={() => setToggle(!toggle)}
+          >
+            <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
+            <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+              <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                <div className="absolute inset-0 -left-1 flex items-center">
+                  <div className="h-2 w-2 rotate-45 bg-white"></div>
+                </div>
+                Settings <span className="text-gray-400"></span>
               </div>
-              Model <span className="text-gray-400"></span>
             </div>
-          </div>
-        </Link>
-        <Link
-          to="/user/addusers"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-users-medical" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Add Users <span className="text-gray-400"></span>
+            <i className={`fa-light ${toggle ? 'fa-chevron-up' : 'fa-chevron-down'}  `}
+              style={{ fontSize: "14px",paddingLeft:"10px" }}
+            ></i>
+          </button>
+          {toggle && (
+            <div className="flex flex-col gap-y-2 mt-2 pl-4">              
+              <Link
+                to="/user/collection"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Collections <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/model"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-list" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Model <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/addusers"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-users-medical" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Add Users <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/store"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-shop" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Stores <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/location"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-globe" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Locations <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/scope-settings"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Scope Settings <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
+              <Link
+                to="/user/templates"
+                className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
+                style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
+              >
+                <i className="fa-light fa-building" style={{ fontSize: "20px" }}></i>
+                <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
+                  <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
+                    <div className="absolute inset-0 -left-1 flex items-center">
+                      <div className="h-2 w-2 rotate-45 bg-white"></div>
+                    </div>
+                    Templates <span className="text-gray-400"></span>
+                  </div>
+                </div>
+              </Link>
             </div>
-          </div>
-        </Link>
-        <Link
-          to="/user/store"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-shop" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Stores <span className="text-gray-400"></span>
-            </div>
-          </div>
-        </Link>
-        <Link
-          to="/user/location"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-globe" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Locations <span className="text-gray-400"></span>
-            </div>
-          </div>
-        </Link>
-        <Link
-          to="/user/scope-settings"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Scope Settings <span className="text-gray-400"></span>
-            </div>
-          </div>
-        </Link>
-        <Link
-          to="/user/templates"
-          className="group relative rounded-xl  p-2 text-blue-600 hover:bg-gray-50"
-          style={{ color: isActive ? "#E2545E" : "#BBBBBB" }}
-        >
-          <i className="fa-light fa-building" style={{ fontSize: "20px" }}></i>
-          <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
-            <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
-              <div className="absolute inset-0 -left-1 flex items-center">
-                <div className="h-2 w-2 rotate-45 bg-white"></div>
-              </div>
-              Templates <span className="text-gray-400"></span>
-            </div>
-          </div>
-        </Link>
+          )}
+        </div> */}
+        
       </nav>
 
       <div className="flex flex-col items-center gap-y-4 py-10">

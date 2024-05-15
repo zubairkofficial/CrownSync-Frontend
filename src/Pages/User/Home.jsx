@@ -12,7 +12,8 @@ import "slick-carousel/slick/slick-theme.css";
 import GoogleLoginComponent from "../Admin/Components/GoogleLoginComponent";
 import GoogleLoginButton from "../Admin/Components/GoogleLoginButton";
 import Loader from "../Admin/Components/Loader";
-export default function Home() {
+
+const Home = () => {
   useEffect(() => {
     document.title = "Home - Crownsync AI";
 
@@ -26,7 +27,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [mails, setMails] = useState([]);
   const [isGoogle, setIsGoogle] = useState(null);
-  const [userNotFound, setUserNotFound] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(true);
   const [loading, setLoading] = useState(true);
   const userJson = localStorage.getItem("user");
 
@@ -38,17 +39,17 @@ export default function Home() {
 
 
   useEffect(() => {
-    const asyncOperations = [
-        new Promise((resolve) => setTimeout(resolve, 1000)), // Example async operation 1
-        new Promise((resolve) => setTimeout(resolve, 2000)), // Example async operation 2
-        new Promise((resolve) => setTimeout(resolve, 3000)), // Example async operation 3
-    ];
+    // const asyncOperations = [
+    //     new Promise((resolve) => setTimeout(resolve, 1000)), // Example async operation 1
+    //     new Promise((resolve) => setTimeout(resolve, 2000)), // Example async operation 2
+    //     new Promise((resolve) => setTimeout(resolve, 3000)), // Example async operation 3
+    // ];
 
-    Promise.all(asyncOperations)
-        .then(() => {
-            setLoading(false);
-            Helpers.toast("success", "Page is ready now");
-        });
+    // Promise.all(asyncOperations)
+    //     .then(() => {
+    //         setLoading(false);
+    //         Helpers.toast("success", "Page is ready now");
+    //     });
 }, []);
   const url = Helpers.apiUrl;
   const handleLoginSuccess = (response) => {
@@ -59,44 +60,29 @@ export default function Home() {
 
   useEffect(() => {
     const fetchDetail = async () => {
-      const url = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-
-      try {
-        const response = await axios.get(`${url}check-login`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.status === 200 && response.data.data) {
-          setIsGoogle(response.data.data);
-          setUserNotFound(false);
-        } else {
-          // If the data is empty or null which should ideally not occur in this branch
-          setIsGoogle(null);
-          setUserNotFound(true);
+        try {
+          const response = await axios.get(`${Helpers.apiUrl}check-login`, Helpers.authHeaders);
+          if (response.status === 200 && response.data.data) {
+            setIsGoogle(response.data.data);
+            setUserNotFound(false);
+          } else {
+            setIsGoogle(null);
+            setUserNotFound(true);
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            // Handle user not found
+            setUserNotFound(true);
+            setIsGoogle(null);
+          } else {
+            // Handle other errors
+            console.error("Error fetching details:", error);
+          }
         }
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          // Handle user not found
-          setUserNotFound(true);
-          setIsGoogle(null);
-        } else {
-          // Handle other errors
-          console.error("Error fetching details:", error);
-        }
-      }
     };
 
     fetchDetail();
   }, []);
-
-
-  const baseUrl = Helpers.apiUrl;
-  const navigate = useNavigate();
 
   const loginWithGoogle = () => {
    // Retrieve the user data from localStorage
@@ -126,18 +112,7 @@ if (user && user.id) {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${baseUrl}email-messages`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // console.log('fetched data from response',response.data);
-
+      const response = await axios.get(`${Helpers.apiUrl}email-messages`, Helpers.authHeaders);
       if (response.status === 200) {
         const emails = response.data.data.map((email) => {
           try {
@@ -177,20 +152,7 @@ if (user && user.id) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
-        // Fetch all email messages
-        const response = await axios.get(`${baseUrl}email-messages`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // console.log('email messages data',response);
-
+        const response = await axios.get(`${Helpers.apiUrl}email-messages`, Helpers.authHeaders);
         if (response.status === 200) {
           console.log('mail data comes',response.data);
           const emails = response.data.data.map((email) => {
@@ -213,7 +175,7 @@ if (user && user.id) {
               email.detail.headers["Message-ID"] === messageId
               
           );
-        //  console.log('message id down',messageId);
+          console.log('message id down',messageId);
           if (emailMessage) {
             setEmailData(emailMessage);
             // console.log("Email data:", emailMessage);
@@ -248,12 +210,12 @@ if (user && user.id) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [finalTemplate, setFinalTemplate] = useState("");
 
-
-  // Fetch templates from the API
-
   const handleTemplateChange = (event) => {
     setLocationId("");
     setSelectedTemplateId(event.target.value);
+  };
+  const handleFinalTemplateChange = (event) => {
+    setFinalTemplate(event.target.value);
   };
 
 
@@ -264,16 +226,7 @@ if (user && user.id) {
     const fetchLocations = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${baseUrl}fetch-locations`, {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}fetch-locations`, Helpers.authHeaders);
         if (response.status === 200 && Array.isArray(response.data.data)) {
           // console.log('location data',response.data.data);
           setLocations(response.data.data);
@@ -293,16 +246,7 @@ if (user && user.id) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${baseUrl}rolex_models`, {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
         if (response.status === 200 && Array.isArray(response.data.data)) {
           setProducts(response.data.data);
         } else {
@@ -326,33 +270,31 @@ if (user && user.id) {
   const [selectedCollectionId, setSelectedCollectionId] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
- // For passing location Id
- const [locationId, setLocationId] = useState("");
+    // For passing store Id
+    const [storeId, setStoreId] = useState("");
 
- const handleLocationButton = (location) => {
-  setLocationId(location);
-};
+    const handleStoreButton = (store) => {
+      setStoreId(store);
+    };
+    const [stores, setStores] = useState([]);
+    // For passing location Id
+    const [locationId, setLocationId] = useState("");
 
-useEffect(() => {
-  if (locationId !== "") {
-      updateTemplate();
-  }
-}, [locationId]);
+    const handleLocationButton = (location) => {
+      setLocationId(location);
+    };
+
+    useEffect(() => {
+      if (locationId !== "" || storeId !== "") {
+        updateTemplate();
+      }
+    }, [locationId, storeId]);
+
 
   useEffect(() => {
     const fetchCollections = async () => {
-      const baseUrl = Helpers.apiUrl; // Replace with your actual API URL
-      const token = localStorage.getItem("token");
-
       try {
-        const response = await axios.get(`${baseUrl}collects`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
         if (response.status === 200) {
           setCollections(response.data.data);
         } else {
@@ -365,18 +307,8 @@ useEffect(() => {
     };
 
     const fetchProducts = async () => {
-      const baseUrl = Helpers.apiUrl; // Replace with your actual API URL
-      const token = localStorage.getItem("token");
-
       try {
-        const response = await axios.get(`${baseUrl}rolex_models`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
         if (response.status === 200) {
           setAllProducts(response.data.data);
         } else {
@@ -451,15 +383,7 @@ useEffect(() => {
 }, [selectedProductId, filteredProducts]);
 
   const getTemplates = async () => {
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates`, Helpers.authHeaders);
     if (response.status === 200) {
       setTemplates(response.data.data);
       // console.log('my templates',response.data.data);
@@ -488,7 +412,8 @@ useEffect(() => {
         'Stock': selectedProduct?.stock || "",
         'Link': selectedProduct?.link || "",
         'Features': selectedProduct?.features || "", 
-        'Store': selectedProduct?.store || "",
+        // 'Store': selectedProduct?.store || "",
+        'Store': storeId || "",
         // 'Location': selectedProduct?.location || "",
         'Location': locationId || "",
 
@@ -497,7 +422,7 @@ useEffect(() => {
         'MyPhone': profile?.phone || "",
         'Address': profile?.address || "",
         'Collection': selectedProduct?.collection_id ? selectedProduct.collection_name : "",
-        'Image': selectedProduct?.image ? `<img src="${Helpers.basePath}/assets/${selectedProduct.image}" alt="${selectedProduct?.name}" style="max-width: 100%; height: 200px; align-items: center; text-align: center; display: flex; justify-content: center; margin-left: 10%" />` : ""
+        'Image': selectedProduct?.image ? `<img src="${selectedProduct.image}" alt="${selectedProduct?.name}" style="max-width: 100%; height: 200px; align-items: center; text-align: center; display: flex; justify-content: center; />` : ""
       };
 
       
@@ -535,17 +460,7 @@ useEffect(() => {
       const userName = user ? user.name : "Customer";
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates`, Helpers.authHeaders);
         const modelName =
           selectedProduct && selectedProduct.name ? selectedProduct.name : "[]";
         const modelPrice =
@@ -650,8 +565,6 @@ useEffect(() => {
   const [resposne, setResponse] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     const username = localStorage.getItem("user");
     const user = JSON.parse(username);
 
@@ -675,14 +588,7 @@ useEffect(() => {
     };
 
     try {
-      const response = await axios.post(`${baseUrl}email-preview`, payload, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.post(`${Helpers.apiUrl}email-preview`,payload, Helpers.authHeaders);
       if (response.status === 200) {
 
         setResponse(response.data.body);
@@ -700,9 +606,7 @@ useEffect(() => {
   const [sendisLoading, setsendisLoading] = useState(false);
   const handleEmailSend = async (e) => {
     e.preventDefault();
-    // setsendisLoading(true);
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
+    setsendisLoading(true);
     const fromField = emailData.detail.headers["From"];
     const received_message = emailData.detail.snippet;
     const match = fromField.match(/^(.*?)\s*<(.*)>$/);
@@ -713,38 +617,31 @@ useEffect(() => {
     // console.log("asdfvcxyh", reciever_name);
     const reciever_email = match ? match[2] : fromField1;
     // console.log(reciever_email);
-    const asseignedTeamId = selectedAssignId;
-  //  alert(asseignedTeamId);
+    const asseignedTeamIds = selectedAssignIds;
+  //  alert(asseignedTeamIds);
     const formData = {
-      template_id: selectedTemplateId,
-      product_id: selectedProductId,
+      // template_id: selectedTemplateId,
+      // product_id: selectedProductId,
       greeting: selectedGreetingText,
       response: resposne, // You need to define what this response should be.
       reply_to: reply_to,
       received_message: received_message,
       responder_name: profile.name,
       responder_mail: isGoogle.contact,
-      sender_phone: profile.phone,
-      sender_address: profile.address,
+      // sender_phone: profile.phone,
+      // sender_address: profile.address,
       reciever_name: reciever_name,
       reciever_email: reciever_email,
-      assigned_team_id : asseignedTeamId,
+      assigned_team_ids : asseignedTeamIds,
       subject : profile.name,
-      location:locationId
+      message : finalTemplate
+      // store:storeId,
+      // location:locationId
     };
 
     try {
-      const response = await axios.post(
-          `${baseUrl}gmail/send-email`,
-          formData,
-          {
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-              },
-          }
-      );
+      const response = await axios.post(`${Helpers.apiUrl}gmail/send-email`, formData, Helpers.authHeaders);
+      console.log(response)
       if (response.status === 200) {
         console.log(response.data);
           Helpers.toast("success", response.data.message);
@@ -764,6 +661,12 @@ useEffect(() => {
           Helpers.toast("error", "Error in Sending Mail ");
       }
   } finally {
+    setExpandedMailId(null);
+    setSelectedTemplateId(null)
+    setLocationId("")
+    setStoreId("")
+    setSelectedCollectionId("")
+    setSelectedProductId("")
       setsendisLoading(false); // Ensure isLoading is set to false in finally block
   }
   
@@ -780,7 +683,7 @@ useEffect(() => {
 
   const filteredMails = mails
     .filter((mail) => {
-      const mailDate = new Date(mail.detail.headers.Date);
+      const mailDate = new Date(mail.detail.headers?.Date);
       const startOfDay = startDate
         ? new Date(new Date(startDate).setHours(0, 0, 0, 0))
         : null;
@@ -799,7 +702,7 @@ useEffect(() => {
         .toLowerCase()
         .includes(lowerCaseSearchTerm);
       const isSearchTermInFrom =
-        mail.detail.headers.From.toLowerCase().includes(lowerCaseSearchTerm);
+        mail.detail.headers?.From?.toLowerCase().includes(lowerCaseSearchTerm);
 
       const isSearchFiltered = isSearchTermInSnippet || isSearchTermInFrom;
       return isSearchFiltered;
@@ -822,8 +725,8 @@ useEffect(() => {
     // Perform sorting
     setMails((currentMails) => {
       return [...currentMails].sort((a, b) => {
-        const dateA = new Date(a.detail.headers.Date);
-        const dateB = new Date(b.detail.headers.Date);
+        const dateA = new Date(a.detail.headers?.Date);
+        const dateB = new Date(b.detail.headers?.Date);
         return newSortDirection === "asc" ? dateA - dateB : dateB - dateA;
       });
     });
@@ -868,18 +771,8 @@ useEffect(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        // console.log(token);
-        const url = Helpers.apiUrl; // Confirm this points to your API
-        const response = await axios.get(`${url}getuserlist`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${Helpers.apiUrl}getuserlist`, Helpers.authHeaders);
         if (response.status === 200) {
-          // Assuming response.data.data is an array of user objects
           setTeam(response.data.data); // Directly set the array of user objects to state
         } else {
           console.log("Error in getting user list");
@@ -890,72 +783,53 @@ useEffect(() => {
     };
     fetchData();
   }, []);
-  const [selectedAssignId, setSelectedAssignId] = useState("");
   const [assignSuccess, setAssignSuccess] = useState(false);
+  const [selectedAssignIds, setSelectedAssignIds] = useState([]);
 
-  const handleAssignChange = async (selectedOption) => {
-    // console.log('handleAssignChange ',selectedOption);
-    const selectedId = selectedOption ? selectedOption.value : "";
+  const handleAssignChange = async (selectedOptions) => {
+    const selectedIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
 
-    console.log('selectedId on team select',selectedId);
-    setSelectedAssignId(selectedId);
+    console.log('selectedIds on team select', selectedIds);
+    setSelectedAssignIds(selectedIds);
 
-    if (!selectedId) return; // Early return if no selection
+    if (!selectedIds.length) return; // Early return if no selection
 
     const url = Helpers.apiUrl;
     const token = localStorage.getItem("token");
-    // console.log(token);
+      try {
+        console.log('message id on call handleAssignChange', messageId);
 
-    try {
-      console.log('message id on call handleAssignChange',messageId);
+        const response = await fetch(`${url}assignuser`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            team_ids: selectedIds,
+            message_id: messageId,
+          }),
+        });
 
-      const response = await fetch(`${url}assignuser`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          team_id: selectedId,
-          message_id: messageId,
-        }),
-      });
+        const data = await response.json();
 
-      
-      const data = await response.json();
-         
-      if (response.ok) {
-        Helpers.toast("success", "Assigned Successfully");
-        console.log(response.data,'asseigned data comes');
-        // You might want to update state or show a success message to the user
-      } else {
-        // Use the error message from the server if available, otherwise a default error message
-        // Helpers.toast('error',"Failed to assign email",data.error);
-        throw new Error(data.error || "Failed to assign email");
-        
+        if (response.ok) {
+          // Helpers.toast("success", "Assigned Successfully");
+          console.log(data, 'assigned data comes');
+        } else {
+          throw new Error(data.error || "Failed to assign email");
+        }
+      } catch (error) {
+        // Helpers.toast("error", error.message || "An error occurred");
+        console.error("Error:", error);
       }
-    } catch (error) {
-
-      
-      Helpers.toast("error", error.message || "An error occurred");
-      console.error("Error:", error);
-    }
   };
 
 
   const filterAssign = async () => {
-    const url = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${url}getassignuser`, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
- 
+      const response = await axios.get(`${Helpers.apiUrl}getassignuser`, Helpers.authHeaders);
       const assignedMessageIds = response.data.data.map(
         (item) => item.message_id
       );
@@ -984,18 +858,8 @@ useEffect(() => {
 
   // Function to filter emails based on selected member ID
   const filterMember = async (memberId) => {
-    // console.log("Member ID:", memberId); // Logging the member ID
-    const url = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
-
     try {
-      const response = await axios.get(`${url}getassignuser`, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${Helpers.apiUrl}getassignuser`, Helpers.authHeaders);
 
       // console.log("Get assignResponse data:", response.data); // Log the response data
       if (response.status === 200) {
@@ -1089,15 +953,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const url = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${url}profile`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${Helpers.apiUrl}profile`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log("API Response:", response.data.data.profile);
           setProfile(response.data.data);
@@ -1149,9 +1005,35 @@ useEffect(() => {
     border: "1px solid #DFE2EB",
     marginLeft: "8px",
   });
+
+   const fetchStores = async () => {
+        try {
+            const response = await axios.get(`${Helpers.apiUrl}fetch-store`, Helpers.authHeaders);
+
+            if (response.status === 200) {
+                const fetchedStores = response.data.data || [];
+                setStores(fetchedStores);
+                // Helpers.toast("success", "Fetch Stores Successfully");
+            } else {
+                setStores([]); // Set to empty array on error
+            }
+        } catch (error) {
+            // Helpers.toast("error", "Error fetching stores. Please try again later.");
+            setStores([]); // Set to empty array on error
+        }
+    };
+
+    useEffect(() => {
+        fetchStores();
+    }, []);
+
+    
+  const [editTemplate, setEditTemplate] = useState(false);
+  const handleEditTemplate = () => {
+    setEditTemplate(!editTemplate);
+};
   return (
     <>
-     {loading ? <Loader /> : 
       <div className="flex text-gray-900 h-[100vh] ">
         <Sidebar />
         <div
@@ -1205,8 +1087,7 @@ useEffect(() => {
                         Clear
                       </button>
                     ) : (
-                      <div>
-                        <p></p></div>
+                      <div><p></p></div>
                     )}
 
                     {assignSuccess ? (
@@ -1226,138 +1107,108 @@ useEffect(() => {
                     )}
                   </div>
                   {userNotFound ? (
-                    
-                   <div>
-                   {/* <GoogleLoginComponent onLoginSuccess={handleLoginSuccess} /> */}
-                   <GoogleLoginButton onLoginClick={loginWithGoogle} />
-                   </div>
-                  ) : (
-                    <>
                     <div>
-            
-           
-        </div>
-
-       
-                      <div
-                        className="pt-5 d-flex"
-                        style={{ width: "100%", position: "static" }}
-                      >
-                        <div style={{ flex: "1" }}>
-                          {mails.length === 0 ? (
+                      {/* Uncomment and use the correct login component as needed */}
+                      {/* <GoogleLoginComponent onLoginSuccess={handleLoginSuccess} /> */}
+                      <GoogleLoginButton onLoginClick={loginWithGoogle} />
+                    </div>
+                  ) : (
+                    mails.length === 0 ? (
+                      <Loader style={{ height: '90vh' }} />
+                    ) : (
+                      <>
+                        <div
+                          className="pt-5 d-flex"
+                          style={{ width: "100%", position: "static" }}
+                        >
+                          {/* <div style={{ flex: "1" }}>
                             <Select
                               styles={customStyles}
+                              options={mails.length === 0 ? [] : options1}
                               placeholder="All Users"
-                              isClearable={true}
-                              style={{ color: "white" }}
-                            />
-                          ) : (
-                            <Select
-                              styles={customStyles}
-                              options={options1}
-                              placeholder="All Users"
-                              onChange={handleMemberChange}
+                              onChange={mails.length === 0 ? null : handleMemberChange}
                               isClearable={true}
                               style={{ color: "white" }}
                               isSearchable={true}
                             />
-                          )}
-                        </div>
-                        <div
-                          className="icons flex ml-5"
-                          style={{ flex: "0 0 auto" }}
-                        >
-                          <div onClick={() => handleIconClick("calendar")}>
-                            <i
-                              className="fa-light fa-calendar-range"
-                              style={iconStyle("calendar")}
-                              title="Calendar"
-                              onClick={toggleInputs}
-                            ></i>
-                          </div>
-                          <div onClick={() => handleIconClick("search")}>
-                            <i
-                              className="fa-light fa-magnifying-glass"
-                              style={iconStyle("search")}
-                              title="Search"
-                              onClick={toggleSearchInput}
-                            ></i>
-                          </div>
-                          <div onClick={toggleSortDirection}>
-                            <i
-                              className={`fa-sharp fa-light ${sortDirection === "asc"
-                                ? "fa-arrow-up-arrow-down"
-                                : "fa-arrow-down-arrow-up"
-                                }`}
-                              style={iconStyle("sort")}
-                              title={`Sort ${sortDirection === "asc"
-                                ? "Ascending"
-                                : "Descending"
-                                }`}
-                              onClick={toggleSort}
-                            ></i>
-                          </div>
-                          <div
-                            className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                            style={{
-                              cursor: "pointer",
-                              color: isFilterActive ? "white" : "#AEAEAE",
-                              backgroundColor: isFilterActive
-                                ? "#E2545E"
-                                : "transparent",
-                            }}
-                            title="Filter"
-                            onClick={toggleFilter}
-                          >
-                            <i
-                              className="fa-light fa-circle-check"
-                              style={{ fontSize: "15px" }}
-                            ></i>
-                          </div>
-                          <GoogleLoginComponent onLoginSuccess={handleLoginSuccess} />
-                          {/* <div
-                            className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                            style={{
-                              cursor: "pointer",
-                            }}
-                            title="Connect With Gmail"
-                            onClick={loginWithGoogle}
-                          >
-                            <i
-                              className="fa-light fa-refresh"
-                              style={{ fontSize: "15px", color: "#AEAEAE" }}
-                            ></i>
                           </div> */}
+                          <div
+                            className="icons flex ml-5"
+                            style={{ flex: "0 0 auto" }}
+                          >
+                            <div onClick={() => handleIconClick("calendar")}>
+                              <i
+                                className="fa-light fa-calendar-range"
+                                style={iconStyle("calendar")}
+                                title="Calendar"
+                                onClick={toggleInputs}
+                              ></i>
+                            </div>
+                            <div onClick={() => handleIconClick("search")}>
+                              <i
+                                className="fa-light fa-magnifying-glass"
+                                style={iconStyle("search")}
+                                title="Search"
+                                onClick={toggleSearchInput}
+                              ></i>
+                            </div>
+                            <div onClick={toggleSortDirection}>
+                              <i
+                                className={`fa-sharp fa-light ${sortDirection === "asc" ? "fa-arrow-up-arrow-down" : "fa-arrow-down-arrow-up"}`}
+                                style={iconStyle("sort")}
+                                title={`Sort ${sortDirection === "asc" ? "Ascending" : "Descending"}`}
+                                onClick={toggleSort}
+                              ></i>
+                            </div>
+                            <div
+                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
+                              style={{
+                                cursor: "pointer",
+                                color: isFilterActive ? "white" : "#AEAEAE",
+                                backgroundColor: isFilterActive ? "#E2545E" : "transparent",
+                              }}
+                              title="Filter"
+                              onClick={toggleFilter}
+                            >
+                              <i
+                                className="fa-light fa-circle-check"
+                                style={{ fontSize: "15px" }}
+                              ></i>
+                            </div>
+                            <GoogleLoginComponent  />
+                            {/* Uncomment and use the correct login button as needed */}
+                            {/* <div
+                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
+                              style={{
+                                cursor: "pointer",
+                              }}
+                              title="Connect With Gmail"
+                              onClick={loginWithGoogle}
+                            >
+                              <i
+                                className="fa-light fa-refresh"
+                                style={{ fontSize: "15px", color: "#AEAEAE" }}
+                              ></i>
+                            </div> */}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="flex justify-center items-center space-x-4">
-                        {showInputs && ( // This line checks if showInputs is true
-                          <>
+                        <div className="flex justify-center items-center space-x-4">
+                          {showInputs && (
                             <div
                               className="pt-5 d-flex"
                               style={{ width: "100%" }}
                             >
                               <div className="flex" style={{ flex: "1" }}>
                                 <div
-                                  className="p-2 flex "
+                                  className="p-2 flex"
                                   style={{ flex: "1" }}
                                 >
                                   <input
                                     type="date"
-                                    value={
-                                      startDate
-                                        ? startDate
-                                          .toISOString()
-                                          .substring(0, 10)
-                                        : ""
-                                    }
+                                    value={startDate ? startDate.toISOString().substring(0, 10) : ""}
                                     onChange={(e) =>
-                                      setStartDate(
-                                        e.target.value
-                                          ? new Date(e.target.value)
-                                          : null
-                                      )
+                                      setStartDate(e.target.value ? new Date(e.target.value) : null)
                                     }
                                     placeholder="Select start date"
                                     style={{
@@ -1370,21 +1221,13 @@ useEffect(() => {
                                 <div className="p-2 flex" style={{ flex: "1" }}>
                                   <input
                                     type="date"
-                                    value={
-                                      endDate
-                                        ? endDate.toISOString().substring(0, 10)
-                                        : ""
-                                    }
+                                    value={endDate ? endDate.toISOString().substring(0, 10) : ""}
                                     onChange={(e) =>
-                                      setEndDate(
-                                        e.target.value
-                                          ? new Date(e.target.value)
-                                          : null
-                                      )
+                                      setEndDate(e.target.value ? new Date(e.target.value) : null)
                                     }
                                     placeholder="Select end date"
                                     style={{
-                                      padding: "5% ",
+                                      padding: "5%",
                                       width: "100%",
                                       borderRadius: "30px",
                                     }}
@@ -1392,125 +1235,117 @@ useEffect(() => {
                                 </div>
                               </div>
                             </div>
-                          </>
+                          )}
+                          {showSearch && (
+                            <input
+                              type="text"
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                              placeholder="Search mails"
+                              className="search-input-class"
+                              style={{
+                                width: "100%",
+                                padding: "2%",
+                                marginTop: "2%",
+                              }}
+                            />
+                          )}
+                        </div>
+                        {filteredMails.length === 0 && !userNotFound ? (
+                          <div style={{ padding: "25%" }}>
+                            <img
+                              src="/media/no_result_found.png"
+                              alt="No results found"
+                            />
+                          </div>
+                        ) : (
+                          filteredMails.map((mail, index) => (
+                            <div key={mail.detail.headers?.["Message-ID"] || index}>
+                              <ul className="my-5 space-y-3 shadow" style={{ borderRadius: "50px" }}>
+                                <li
+                                  key={mail.detail.id}
+                                  className={`rounded-lg ${
+                                    mail.detail.headers &&
+                                    selectedMailId === mail.detail.headers["Message-ID"]
+                                      ? "selected-outline"
+                                      : ""
+                                  }`}
+                                >
+                                  <Link
+                                    to={`/user/dashboard/${mail.detail.headers?.["Message-ID"]}`}
+                                    className="flex items-center p-3 bg-white text-base font-bold text-gray-900 rounded-lg hover:bg-gray-100 group hover:shadow dark:hover:bg-gray-100 dark:text-white"
+                                    onClick={() => handleToggleDetails(mail.detail.headers?.["Message-ID"])}
+                                  >
+                                    {/* <img
+                                      src="/media/avatars/300-1.jpg"
+                                      alt=""
+                                      className="w-12 h-12 rounded-full"
+                                      style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "10px",
+                                      }}
+                                    /> */}
+                                    <div className="flex flex-col flex-grow ms-3">
+                                      <div className="flex">
+                                        <span>
+                                          {mail.detail.headers?.From ? mail.detail.headers.From.split(" <")[0] : "Unknown Sender"}
+                                        </span>
+                                        {assignSuccess ? (
+                                          <i
+                                            className="fa-light fa-circle-check"
+                                            style={{
+                                              fontSize: "15px",
+                                              color: "green",
+                                              cursor: "pointer",
+                                              marginLeft: "3%",
+                                              marginTop: "0%",
+                                            }}
+                                          ></i>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </div>
+                                      <small className="text-xs" style={{ color: "#C2C2C2" }}>
+                                        {mail.detail.headers?.Date || ""}
+                                      </small>
+                                      <p
+                                        className="text-xs"
+                                        style={{
+                                          color: "#C2C2C2",
+                                          width: "100%",
+                                        }}
+                                      >
+                                        {mail.detail.headers?.Subject || "No Subject"}
+                                      </p>
+                                    </div>
+                                    <i
+                                      className={`fa-solid ${
+                                        expandedMailId === mail.detail.headers?.["Message-ID"]
+                                          ? "fa-caret-up"
+                                          : "fa-caret-down"
+                                      } ml-auto text-gray-500`}
+                                    ></i>
+                                  </Link>
+                                  {expandedMailId === mail.detail.headers?.["Message-ID"] && (
+                                    <div className="bg-white p-3 rounded-lg">
+                                      <p className="text-xs">
+                                        {"Message:- "}
+                                        {mail.detail.snippet || "No snippet available"}
+                                      </p>
+                                      <p className="text-xs">
+                                        {"Received:- "}
+                                        {mail.detail.headers?.Date || "No date available"}
+                                      </p>
+                                    </div>
+                                  )}
+                                </li>
+                              </ul>
+                            </div>
+                          ))
                         )}
-                        {showSearch && (
-                          <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search mails"
-                            className="search-input-class" // Add your CSS class for styling
-                            style={{
-                              width: "100%",
-                              padding: "2%",
-                              marginTop: "2%",
-                            }}
-                          />
-                        )}
-                      </div>
-                      {filteredMails.length === 0 && !userNotFound ? (
-  <div style={{ padding: "25%" }}>
-    <img
-      src="/media/no_result_found.png"
-      alt="No results found"
-    />
-  </div>
-) : (
-  mails &&
-  filteredMails.map((mail, index) => (
-    <div key={mail.detail.headers["Message-ID"]}>
-      <ul
-        className="my-5 space-y-3 shadow"
-        style={{ borderRadius: "50px" }}
-      >
-        <li
-          className={`rounded-lg ${selectedMailId ===
-            mail.detail.headers["Message-ID"]
-            ? "selected-outline"
-            : ""
-            }`}
-        >
-          <Link
-            to={`/user/dashboard/${mail.detail.headers["Message-ID"]}`}
-            className={`flex items-center p-3 bg-white text-base font-bold text-gray-900 rounded-lg hover:bg-gray-100 group hover:shadow dark:hover:bg-gray-100 dark:text-white`}
-            onClick={() =>
-              handleToggleDetails(
-                mail.detail.headers["Message-ID"]
-              )
-            }
-          >
-            <img
-              src="/media/avatars/300-1.jpg"
-              alt=""
-              className="w-12 h-12 rounded-full"
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "10px",
-              }}
-            />
-            <div className="flex flex-col flex-grow ms-3">
-              <div className="flex">
-                <span className="whitespace-nowrap">
-                  {mail.detail.headers.From.split(" <")[0]}{" "}
-                </span>
-                {assignSuccess ? (
-                  <i
-                    className="fa-light fa-circle-check"
-                    style={{
-                      fontSize: "15px",
-                      color: "green",
-                      cursor: "pointer",
-                      marginLeft: "3%",
-                      marginTop: "0%",
-                    }}
-                  ></i>
-                ) : (
-                  ""
-                )}
-              </div>
-              <small
-                className="text-xs"
-                style={{ color: "#C2C2C2" }}
-              >
-                {mail.detail?.headers?.Date
-                  ? mail.detail.headers.Date
-                  : ""}
-              </small>
-
-              <p
-                className="text-xs"
-                style={{
-                  color: "#C2C2C2",
-                  width: "100%",
-                }}
-              >
-                {mail.detail.headers.Subject}
-              </p>
-            </div>
-            <i className={`fa-solid ${expandedMailId === mail.detail.headers["Message-ID"] ? 'fa-caret-up' : 'fa-caret-down'} ml-auto text-gray-500`}></i>
-          </Link>
-          {expandedMailId ===
-            mail.detail.headers["Message-ID"] && (
-              <div className="bg-white p-3 rounded-lg">
-                <p className="text-xs">
-                  {"Message:- "}
-                  {mail.detail.snippet}
-                </p>
-                <p className="text-xs">
-                  {"Received:- "}
-                  {mail.detail.headers.Date}
-                </p>
-              </div>
-            )}
-        </li>
-      </ul>
-    </div>
-  ))
-)}
-
-                    </>
+                      </>
+                    )
                   )}
                 </div>
               </div>
@@ -1531,6 +1366,7 @@ useEffect(() => {
                       classNamePrefix="select"
                       styles={customStyles1}
                       placeholder="Select a team member"
+                      isDisabled={expandedMailId === null ? true : false}
                     />
                   ) : (
                     <Select
@@ -1542,9 +1378,11 @@ useEffect(() => {
                       isSearchable={true}
                       styles={customStyles1}
                       name="teamSelect"
+                      isMulti
                       options={options} // Your options array here
                       onChange={handleAssignChange}
                       placeholder="Select a team member"
+                      isDisabled={expandedMailId === null ? true : false}
                     />
                   )}
                 </div>
@@ -1558,6 +1396,7 @@ useEffect(() => {
                     onChange={handleTemplateChange}
                     value={selectedTemplateId || ""}
                     style={{ background: "#D9D9D9B2", color: "#ADADAD" }}
+                    disabled={expandedMailId === null ? true : false}
                   >
 
                     <option value="" disabled>Select Template</option>
@@ -1571,13 +1410,14 @@ useEffect(() => {
                 </div>
                 <div className="sub-card bg-gray-100 mt-2 p-4 border border-gray-200 rounded-lg ">
                   <h1 className="text-xl" style={{ color: "#666666" }}>
-                    Store Location
+                    Location
                   </h1>
                   <select
                     className="form-select mt-3 block w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     onChange={(e) => handleLocationButton(e.target.value)}
                     value={locationId || ""}
                     style={{ background: "#D9D9D9B2", color: "#ADADAD" }}
+                    disabled={expandedMailId === null ? true : false}
                   >
                     <option value="" disabled>Select Location</option>
                     {locations.map((location) => (
@@ -1589,6 +1429,26 @@ useEffect(() => {
 
 
                 </div>
+                
+                <div className="sub-card bg-gray-100 mt-2 p-4 border border-gray-200 rounded-lg ">
+                  <h1 className="text-xl" style={{ color: "#666666" }}>
+                    Stores
+                  </h1>
+                  <select
+                    className="form-select mt-3 block w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => handleStoreButton(e.target.value)}
+                    value={storeId || ""}
+                    style={{ background: "#D9D9D9B2", color: "#ADADAD" }}
+                    disabled={expandedMailId === null ? true : false}
+                  >
+                    <option value="" disabled>Select Store</option>
+                    {stores.map((store) => (
+                      <option key={store.id} value={store.name}>
+                        {store.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               
                 <div className="sub-card bg-gray-100 mt-2 p-4 border border-gray-200 rounded-lg">
                   <h1 className="text-xl" style={{ color: "#666666" }}>
@@ -1599,6 +1459,7 @@ useEffect(() => {
                     value={selectedCollectionId}
                     onChange={handleSelectionChange}
                     style={{ background: "#D9D9D9B2", color: "#ADADAD" }}
+                    disabled={expandedMailId === null ? true : false}
                   >
                     <option value="">Select a collection</option>
                     {collections.map((collection) => (
@@ -1641,17 +1502,24 @@ useEffect(() => {
                   <div className="col-md-12 w-full p-2 bg-white border-gray-200 rounded-lg sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <div className="card shadow-none">
                       <div className="p-3">
-                        <p
-                          className="small text-dark"
-                          style={{ whiteSpace: "pre-wrap" }}
-                        >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: finalTemplate,
-                            }}
-                          />
-                        
-                        </p>
+                        {!editTemplate&&(
+                          <p
+                            className="small text-dark"
+                            style={{ whiteSpace: "pre-wrap" }}
+                          >
+                              <div
+                                dangerouslySetInnerHTML={{__html: finalTemplate,}}
+                              />
+                          </p>
+                        )}                          
+                        {editTemplate&&(
+                            <textarea  
+                              value={finalTemplate}
+                              onChange={handleFinalTemplateChange}                            
+                              style={{ whiteSpace: "pre-wrap", width:"100%",height:"80vh",
+                                border:"1px solid black",borderRadius:"10px",padding:"5%" }}
+                            />
+                          )}
                       </div>
                       <div
                         style={{
@@ -1662,6 +1530,18 @@ useEffect(() => {
                         }}
                       >
                         <form onSubmit={handleEmailSend}>
+                          <button
+                              type="button"
+                              className="btn flex-1 py-2"
+                              onClick={handleEditTemplate}
+                              style={{
+                                background: "#E2545E",
+                                color: "white",
+                                marginLeft: "1rem",
+                              }}
+                            >
+                              {editTemplate ? "View" : "Edit"}
+                            </button>
                           <button
                             type="submit"
                             className="btn flex-1 py-2"
@@ -1702,7 +1582,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-    }
     </>
   );
 }
+export default  Home;

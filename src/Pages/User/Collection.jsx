@@ -5,15 +5,12 @@ import axios from 'axios';
 import { toast, ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Collection = () => {
+const Collection = ({ activeTab, setActiveTab }) => {
+    
     const [name, setName] = useState('');
     const [slug, setSlug] = useState('');
     const [collections, setCollections] = useState([]);
     const [editingCollectionId, setEditingCollectionId] = useState(null);
-    // useEffect(() => {
-    //     fetchCollections();
-    //     console.log('collections comes');
-    // }, []);
     const fetchCollections = async () => {
         try {
             const url = Helpers.apiUrl;
@@ -39,23 +36,6 @@ const Collection = () => {
     };
 
     const handleDelete = async (collectionId) => {
-        toast.info(
-            <div>
-                <p>Are you sure you want to delete this collection?</p>
-                <button onClick={() => confirmDelete(collectionId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
-                <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
-            </div>,
-            {
-                autoClose: false,
-                closeOnClick: false,
-                draggable: false,
-                position: 'top-center',
-                transition: Slide,
-            }
-        );
-    };
-
-    const confirmDelete = async (collectionId) => {
         const baseUrl = Helpers.apiUrl;
         const token = localStorage.getItem('token');
 
@@ -153,16 +133,19 @@ const Collection = () => {
 
     useEffect(() => {
         fetchCollections();
-        console.log('collections comes');
     }, []);
+    useEffect(() => {
+        if (activeTab === 'Collections') {
+            fetchCollections();
+        }
+      }, [activeTab]);
 
     return (
-        <div className='flex h-screen'>
-            <Sidebar />
-            <ToastContainer />
-            <div className='container mx-auto flex flex-col md:flex-row gap-8 p-4' style={{
+        <>
+        <ToastContainer />
+            <div className='container mx-auto md:flex-row gap-8 p-4' style={{
                 borderRadius: '20px',
-                background: '#F9F9F9',
+                // background: '#F9F9F9',
                 marginTop: '2%',
             }}>
                 {/* Form Section */}
@@ -186,7 +169,9 @@ const Collection = () => {
                                 className='border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
                             />
                         </div>
-                        <div className='w-150'>
+                        
+                    </div>
+                    <div className='w-150 flex justify-end'>
                             <button
                                 onClick={handleSave}
                                 className='bg-[#f36b74] !text-white font-bold px-4 py-2 rounded-md hover:bg-[#fa9198] transition-colors'
@@ -194,7 +179,6 @@ const Collection = () => {
                                 {editingCollectionId ? 'Update' : 'Submit'}
                             </button>
                         </div>
-                    </div>
                 </div>
 
 
@@ -234,7 +218,7 @@ const Collection = () => {
                     </table>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

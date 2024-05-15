@@ -5,29 +5,12 @@ import axios from "axios";
 import { toast, ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Store = () => {
+const Store = ({ activeTab, setActiveTab }) => {
     const [name, setName] = useState('');
     const [stores, setStores] = useState([]);
     const [editingStoreId, setEditingStoreId] = useState(null);
 
     const handleDelete = async (storeId) => {
-        toast.info(
-            <div>
-                <p>Are you sure you want to delete this store?</p>
-                <button onClick={() => confirmDelete(storeId)} style={{ marginRight: '20px', color: 'red' }}>OK</button>
-                <button onClick={() => toast.dismiss()} style={{ marginRight: '20px', color: 'blue' }}>Cancel</button>
-            </div>,
-            {
-                autoClose: false,
-                closeOnClick: false,
-                draggable: false,
-                position: "top-center",
-                transition: Slide,
-            }
-        );
-    };
-
-    const confirmDelete = async (storeId) => {
         const baseUrl = Helpers.apiUrl;
         const token = localStorage.getItem("token");
 
@@ -143,14 +126,18 @@ const Store = () => {
     useEffect(() => {
         fetchStores();
     }, []);
+    useEffect(() => {
+        if (activeTab === 'Stores') {
+            fetchStores();
+        }
+      }, [activeTab]);
 
     return (
-        <div className="flex h-screen">
-            <Sidebar />
-            <ToastContainer />
-            <div className="container mx-auto flex flex-col md:flex-row gap-8 p-4" style={{
+        <>
+        <ToastContainer />
+            <div className="container mx-auto md:flex-row gap-8 p-4" style={{
                 borderRadius: "20px",
-                background: "#F9F9F9",
+                // background: "#F9F9F9",
                 marginTop: "2%",
             }}>
                 {/* Form Section */}
@@ -211,7 +198,7 @@ const Store = () => {
                     </table>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,8 +1,17 @@
 import React from 'react';
 
-const Loader = () => {
+const Loader = ({ style }) => {
+  const defaultStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh'
+  };
+
+  const combinedStyle = { ...defaultStyle, ...style };
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={combinedStyle}>
       <div style={{
         border: '8px solid #f3f3f3', /* Light grey */
         borderTop: '8px solid #ff69b4', /* Pink */
