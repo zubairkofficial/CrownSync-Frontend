@@ -403,7 +403,7 @@ if (user && user.id) {
       const username = localStorage.getItem("user");
       const user = JSON.parse(username);
       const userName = user ? user.name : "";
-
+      console.log("Image Path", selectedProduct?.image);
       const replacements = {
         'MyName': userName || "",
         'ClientName': emailData.detail.headers["From"].match(/^(.*?)\s*<(.*)>$/)?.[1] || "",
@@ -422,7 +422,7 @@ if (user && user.id) {
         'MyPhone': profile?.phone || "",
         'Address': profile?.address || "",
         'Collection': selectedProduct?.collection_id ? selectedProduct.collection_name : "",
-        'Image': selectedProduct?.image ? `<img src="${selectedProduct.image}" alt="${selectedProduct?.name}" style="max-width: 100%; height: 200px; align-items: center; text-align: center; display: flex; justify-content: center; />` : ""
+        'Image': selectedProduct?.image ? `<img src="${selectedProduct.image}" alt="${selectedProduct?.name}" style="max-width: 100%; height: 200px; align-items: center; text-align: center; display: flex; justify-content: center;object-fit: contain;" />` : ""
       };
 
       
@@ -1508,7 +1508,7 @@ if (user && user.id) {
                             style={{ whiteSpace: "pre-wrap" }}
                           >
                               <div
-                                dangerouslySetInnerHTML={{__html: finalTemplate,}}
+                                dangerouslySetInnerHTML={{__html: finalTemplate}}
                               />
                           </p>
                         )}                          

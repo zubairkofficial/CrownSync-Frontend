@@ -10,11 +10,11 @@ import TemplateList from './TemplateList';
 
 const Setting = () => {
   const [activeTab, setActiveTab] = useState('Collections');
-
+   
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-
+  
   return (
     <div className="flex text-gray-900 h-[100vh]">
       <Sidebar />
