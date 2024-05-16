@@ -18,17 +18,7 @@ const TemplateList = ({ activeTab, setActiveTab }) => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-
-      const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates`, Helpers.authHeaders);
       if (response.status === 200) {
         setTemplate(response.data.data);
       } else {
@@ -62,18 +52,8 @@ const TemplateList = ({ activeTab, setActiveTab }) => {
     }
 }, [activeTab]);
   const handleDelete = async (templateId) => {
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
-
     try {
-      const response = await axios.delete(`${baseUrl}admin/mail_templates/${templateId}`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.delete(`${Helpers.apiUrl}admin/mail_templates/${templateId}`, Helpers.authHeaders);
       if (response.status === 200) {
         console.log("Template deleted successfully");
         toast.dismiss();

@@ -14,16 +14,8 @@ function TemplateUpdate() {
 
     useEffect(() => {
         const fetchTemplateDetails = async () => {
-            const baseUrl = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
             try {
-                const response = await axios.get(`${baseUrl}admin/mail_templates/${templateId}`, {
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates/${templateId}`, Helpers.authHeaders);
                 if (response.data && response.data.data) {
                     const { data } = response.data;
                     setTemplateDetails({
@@ -49,16 +41,8 @@ function TemplateUpdate() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
         try {
-            const response = await axios.put(`${baseUrl}admin/mail_templates/${templateId}`, templateDetails, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.put(`${Helpers.apiUrl}admin/mail_templates/${templateId}`, templateDetails, Helpers.authHeaders);
             if (response.status === 200 || response.status === 204) {
                 Helpers.toast("success", 'Template updated successfully');
                 navigate('/admin/dashboard');

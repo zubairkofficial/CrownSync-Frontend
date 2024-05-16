@@ -14,16 +14,8 @@ function ModelUpdate() {
   
     useEffect(() => {
         const fetchTemplateDetails = async () => {
-            const baseUrl = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
             try {
-              const response = await axios.get(`${baseUrl}collects/${modeleId}`, {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              });
+              const response = await axios.get(`${Helpers.apiUrl}collects/${modeleId}`, Helpers.authHeaders);
               const data = response.data.data;
               console.log(response.data)
               setTemplateDetails({
@@ -49,16 +41,8 @@ function ModelUpdate() {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.put(`${baseUrl}collects/${modeleId}`, templateDetails, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.put(`${Helpers.apiUrl}collects/${modeleId}`, templateDetails, Helpers.authHeaders);
         if (response.status === 200 || response.status === 204) {
           Helpers.toast("success",'Collection updated successfully');
           // navigate('/admin/models'); // Update with actual path

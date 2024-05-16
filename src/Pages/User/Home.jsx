@@ -794,31 +794,13 @@ if (user && user.id) {
 
     if (!selectedIds.length) return; // Early return if no selection
 
-    const url = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
       try {
-        console.log('message id on call handleAssignChange', messageId);
-
-        const response = await fetch(`${url}assignuser`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            team_ids: selectedIds,
-            message_id: messageId,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
+        const response = await axios.post(`${Helpers.apiUrl}assignuser`,{team_ids: selectedIds,message_id: messageId,}, Helpers.authHeaders);
+        if (response.status === 200) {
           // Helpers.toast("success", "Assigned Successfully");
-          console.log(data, 'assigned data comes');
+          console.log(response, 'assigned data comes');
         } else {
-          throw new Error(data.error || "Failed to assign email");
+          throw new Error(response.error || "Failed to assign email");
         }
       } catch (error) {
         // Helpers.toast("error", error.message || "An error occurred");
@@ -1114,7 +1096,84 @@ if (user && user.id) {
                     </div>
                   ) : (
                     mails.length === 0 ? (
-                      <Loader style={{ height: '90vh' }} />
+                      <>
+                      <div
+                          className="pt-5 d-flex"
+                          style={{ width: "100%", position: "static" }}
+                        >
+                          {/* <div style={{ flex: "1" }}>
+                            <Select
+                              styles={customStyles}
+                              options={mails.length === 0 ? [] : options1}
+                              placeholder="All Users"
+                              onChange={mails.length === 0 ? null : handleMemberChange}
+                              isClearable={true}
+                              style={{ color: "white" }}
+                              isSearchable={true}
+                            />
+                          </div> */}
+                          <div
+                            className="icons flex ml-5"
+                            style={{ flex: "0 0 auto" }}
+                          >
+                            <div onClick={() => handleIconClick("calendar")}>
+                              <i
+                                className="fa-light fa-calendar-range"
+                                style={iconStyle("calendar")}
+                                title="Calendar"
+                                onClick={toggleInputs}
+                              ></i>
+                            </div>
+                            <div onClick={() => handleIconClick("search")}>
+                              <i
+                                className="fa-light fa-magnifying-glass"
+                                style={iconStyle("search")}
+                                title="Search"
+                                onClick={toggleSearchInput}
+                              ></i>
+                            </div>
+                            <div onClick={toggleSortDirection}>
+                              <i
+                                className={`fa-sharp fa-light ${sortDirection === "asc" ? "fa-arrow-up-arrow-down" : "fa-arrow-down-arrow-up"}`}
+                                style={iconStyle("sort")}
+                                title={`Sort ${sortDirection === "asc" ? "Ascending" : "Descending"}`}
+                                onClick={toggleSort}
+                              ></i>
+                            </div>
+                            <div
+                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
+                              style={{
+                                cursor: "pointer",
+                                color: isFilterActive ? "white" : "#AEAEAE",
+                                backgroundColor: isFilterActive ? "#E2545E" : "transparent",
+                              }}
+                              title="Filter"
+                              onClick={toggleFilter}
+                            >
+                              <i
+                                className="fa-light fa-circle-check"
+                                style={{ fontSize: "15px" }}
+                              ></i>
+                            </div>
+                            <GoogleLoginComponent  />
+                            {/* Uncomment and use the correct login button as needed */}
+                            {/* <div
+                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
+                              style={{
+                                cursor: "pointer",
+                              }}
+                              title="Connect With Gmail"
+                              onClick={loginWithGoogle}
+                            >
+                              <i
+                                className="fa-light fa-refresh"
+                                style={{ fontSize: "15px", color: "#AEAEAE" }}
+                              ></i>
+                            </div> */}
+                          </div>
+                        </div>
+                      <Loader style={{ height: '80vh' }} />
+                      </>
                     ) : (
                       <>
                         <div
@@ -1191,8 +1250,7 @@ if (user && user.id) {
                               ></i>
                             </div> */}
                           </div>
-                        </div>
-
+                        </div> 
                         <div className="flex justify-center items-center space-x-4">
                           {showInputs && (
                             <div

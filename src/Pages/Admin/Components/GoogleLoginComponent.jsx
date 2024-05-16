@@ -46,7 +46,7 @@ const GoogleLoginComponent = () => {
         style={{
           cursor: isLoading ? 'not-allowed' : 'pointer',
         }}
-        title="Connect With Gmail"
+        title="Refresh mail"
         onClick={!isLoading ? loginWithGoogle : null}
         disabled={isLoading}
       >

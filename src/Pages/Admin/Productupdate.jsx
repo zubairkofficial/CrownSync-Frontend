@@ -20,16 +20,8 @@ function Productupdate() {
   
     useEffect(() => {
         const fetchTemplateDetails = async () => {
-            const baseUrl = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
             try {
-              const response = await axios.get(`${baseUrl}rolex_models/${productId}`, {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              });
+              const response = await axios.get(`${Helpers.apiUrl}rolex_models/${productId}`, Helpers.authHeaders);
               const data = response.data.data;
               console.log(response.data)
               setTemplateDetails({
@@ -60,16 +52,8 @@ function Productupdate() {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.put(`${baseUrl}rolex_models/${productId}`, templateDetails, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.put(`${Helpers.apiUrl}rolex_models/${productId}`, templateDetails, Helpers.authHeaders);
         if (response.status === 200 || response.status === 204) {
           Helpers.toast("success",'Product updated successfully');
           navigate('/admin/products'); // Update with actual path

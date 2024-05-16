@@ -13,16 +13,8 @@ function Queryupdate() {
   
     useEffect(() => {
         const fetchTemplateDetails = async () => {
-            const baseUrl = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
             try {
-              const response = await axios.get(`${baseUrl}admin/scop_settings/${queryId}`, {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              });
+              const response = await axios.get(`${Helpers.apiUrl}admin/scop_settings/${queryId}`, Helpers.authHeaders);
               const data = response.data.data;
               console.log(response.data)
               setTemplateDetails({
@@ -47,16 +39,8 @@ function Queryupdate() {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.put(`${baseUrl}admin/scop_settings/${queryId}`, templateDetails, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.put(`${Helpers.apiUrl}admin/scop_settings/${queryId}`, templateDetails, Helpers.authHeaders);
         if (response.status === 200 || response.status === 204) {
           Helpers.toast("success",'Query updated successfully');
           navigate('/admin/queries'); // Update with actual path

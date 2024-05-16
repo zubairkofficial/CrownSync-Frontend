@@ -13,16 +13,7 @@ const Collection = ({ activeTab, setActiveTab }) => {
     const [editingCollectionId, setEditingCollectionId] = useState(null);
     const fetchCollections = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${url}collects`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
             if (response.status === 200) {
                 const fetchedCollections = response.data.data || [];
                 setCollections(fetchedCollections);
@@ -36,25 +27,13 @@ const Collection = ({ activeTab, setActiveTab }) => {
     };
 
     const handleDelete = async (collectionId) => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem('token');
-
         try {
-            const response = await axios.delete(`${baseUrl}collects/${collectionId}`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.delete(`${Helpers.apiUrl}collects/${collectionId}`, Helpers.authHeaders);
             if (response.status === 200) {
-                toast.dismiss();
                 Helpers.toast('success', 'Collection Deleted Successfully');
                 setCollections((collections) => collections.filter((coll) => coll.id !== collectionId));
             }
         } catch (error) {
-            toast.dismiss();
             Helpers.toast('error', 'An error occurred during deletion');
         }
     };
@@ -66,9 +45,6 @@ const Collection = ({ activeTab, setActiveTab }) => {
     };
 
     const handleSave = async () => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem('token');
-
         if (!name.trim()) {
             Helpers.toast('error', 'Please enter name');
             return;
@@ -81,17 +57,7 @@ const Collection = ({ activeTab, setActiveTab }) => {
         if (editingCollectionId) {
             // Update existing collection
             try {
-                const response = await axios.put(`${baseUrl}update-collection/${editingCollectionId}`, {
-                    name,
-                    slug
-                }, {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
+                const response = await axios.put(`${Helpers.apiUrl}update-collection/${editingCollectionId}`,{ name, slug }, Helpers.authHeaders); 
                 if (response.status === 200) {
                     Helpers.toast('success', 'Collection Updated Successfully');
                     fetchCollections();
@@ -107,16 +73,7 @@ const Collection = ({ activeTab, setActiveTab }) => {
         } else {
             // Add a new collection
             try {
-                const response = await fetch(`${baseUrl}store-collection`, {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ name, slug })
-                });
-
+                const response = await axios.post(`${Helpers.apiUrl}store-collection`,{ name, slug }, Helpers.authHeaders);
                 if (response.status === 200) {
                     Helpers.toast('success', 'Collection Saved Successfully');
                     setName('');

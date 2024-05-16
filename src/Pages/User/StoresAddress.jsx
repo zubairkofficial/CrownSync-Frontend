@@ -12,16 +12,7 @@ const StoresAddress = ({ activeTab, setActiveTab }) => {
 
     const fetchStoresAddress = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
-            const response = await axios.get(`${url}fetch-locations`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.get(`${Helpers.apiUrl}fetch-locations`, Helpers.authHeaders);
             if (response.status === 200) {
                 const fetchedLocations = response.data.data || [];
                 setLocations(fetchedLocations);
@@ -34,18 +25,8 @@ const StoresAddress = ({ activeTab, setActiveTab }) => {
         }
     };
     const handleDelete = async (locationId) => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await axios.delete(`${baseUrl}delete-location/${locationId}`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.delete(`${Helpers.apiUrl}delete-location/${locationId}`, Helpers.authHeaders);
             if (response.status === 200) {
                 toast.dismiss();
                 Helpers.toast("success", "Location Deleted Successfully");
@@ -63,9 +44,6 @@ const StoresAddress = ({ activeTab, setActiveTab }) => {
     };
 
     const handleSave = async () => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
         if (!location.trim()) {
             Helpers.toast("error", "Please enter a location name");
             return;
@@ -74,16 +52,7 @@ const StoresAddress = ({ activeTab, setActiveTab }) => {
         if (editingLocationId) {
             // Update existing location
             try {
-                const response = await axios.put(`${baseUrl}update-location/${editingLocationId}`, {
-                    location
-                }, {
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
+                const response = await axios.put(`${Helpers.apiUrl}update-location/${editingLocationId}`, {location}, Helpers.authHeaders);
                 if (response.status === 200) {
                     Helpers.toast("success", "Location Updated Successfully");
                     fetchStoresAddress();
@@ -98,16 +67,7 @@ const StoresAddress = ({ activeTab, setActiveTab }) => {
         } else {
             // Add a new location
             try {
-                const response = await fetch(`${baseUrl}add-location`, {
-                    method: 'POST',
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ location })
-                });
-
+                const response = await axios.post(`${Helpers.apiUrl}add-location`,{ location }, Helpers.authHeaders);
                 if (response.status === 200) {
                     Helpers.toast("success", "Location Saved Successfully");
                     setLocation("");

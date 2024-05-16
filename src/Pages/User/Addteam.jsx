@@ -35,19 +35,9 @@ const Addteam =({ activeTab, setActiveTab }) => {
   }, [activeTab]);
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      console.log(token);
-      const url = Helpers.apiUrl; // Make sure Helpers.apiUrl is defined and correct
-      const response = await axios.get(`${url}userlist`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${Helpers.apiUrl}userlist`, Helpers.authHeaders);
       if (response.status === 200) {
-        console.log(response.data);
-        setUser(response.data.data); // Assuming response.data is an array of users
+        setUser(response.data.data);
       } else {
         console.log("Error in getting user list");
       }
@@ -61,16 +51,7 @@ const Addteam =({ activeTab, setActiveTab }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        console.log(token);
-        const url = Helpers.apiUrl; // Confirm this points to your API
-        const response = await axios.get(`${url}getuserlist`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${Helpers.apiUrl}getuserlist`, Helpers.authHeaders);
         if (response.status === 200) {
           // Assuming response.data.data is an array of user objects
           setTeam(response.data.data); // Directly set the array of user objects to state
@@ -89,8 +70,6 @@ const Addteam =({ activeTab, setActiveTab }) => {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     const username = localStorage.getItem("user");
     const user = JSON.parse(username);
 
@@ -107,14 +86,7 @@ const Addteam =({ activeTab, setActiveTab }) => {
     };
 
     try {
-        const response = await axios.post(`${baseUrl}adduser`, payload, {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
+        const response = await axios.post(`${Helpers.apiUrl}adduser`, payload, Helpers.authHeaders);
         if (response.status === 200) {
             console.log("Response data:", response.data);
             Helpers.toast("success", "Team Member Added Successfully");
@@ -135,21 +107,10 @@ const Addteam =({ activeTab, setActiveTab }) => {
 };
 
 const handleDelete = async (templateId) => {
-  const baseUrl = Helpers.apiUrl;
-  const token = localStorage.getItem("token");
-
   try {
-      const response = await axios.delete(`${baseUrl}deluserlist/${templateId}`, {
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-          },
-      });
-
+      const response = await axios.delete(`${Helpers.apiUrl}deluserlist/${templateId}`, Helpers.authHeaders);
       if (response.status === 200) {
-          // console.log("Deleted successfully");
-          toast.dismiss();
+          // toast.dismiss();
           Helpers.toast("success","Team Member Deleted Successfully");
           setTeam((prevTeam) =>
               prevTeam.filter((member) => member.id !== templateId)
@@ -157,7 +118,7 @@ const handleDelete = async (templateId) => {
       }
   } catch (error) {
       // console.error("An error occurred during deletion:", error);
-      toast.dismiss();
+      // toast.dismiss();
       Helpers.toast("error","An error occurred during deletion");
   }
 };

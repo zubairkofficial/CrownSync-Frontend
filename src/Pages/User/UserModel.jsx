@@ -25,16 +25,7 @@ const UserModel = ({ activeTab, setActiveTab }) => {
 
     const fetchCollections = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${url}collects`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
             if (response.status === 200) {
                 setCollections(response.data.data || []);
             } else {
@@ -48,15 +39,7 @@ const UserModel = ({ activeTab, setActiveTab }) => {
 
     const fetchModels = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${url}rolex_models`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
 
             if (response.status === 200) {
                 setModels(response.data.data || []);
@@ -70,7 +53,7 @@ const UserModel = ({ activeTab, setActiveTab }) => {
     };
 
     const handleEdit = (model) => {
-        const baseUrl = Helpers.apiUrl.replace('/api', ''); // Ensure base URL is correct
+        handleAddmodel();
         setModelName(model.name);
         setSlug(model.slug);
         setPrice(model.price);
@@ -81,7 +64,7 @@ const UserModel = ({ activeTab, setActiveTab }) => {
         setFeatures(model.features);
         setSelectedCollection(model.collection_id);
         setEditingModelId(model.id);
-        setImagePreview(model.image ? `${baseUrl}${model.image}` : ''); // Construct the full image URL
+        setImagePreview(model.image ? `${model.image}` : ''); // Construct the full image URL
     };
 
     // const handleDelete = async (modelId) => {
@@ -102,18 +85,8 @@ const UserModel = ({ activeTab, setActiveTab }) => {
     // };
 
     const handleDelete = async (modelId) => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem('token');
-
         try {
-            const response = await axios.delete(`${baseUrl}models/${modelId}`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.delete(`${Helpers.apiUrl}rolex_model/${modelId}`, Helpers.authHeaders);
             if (response.status === 200) {
                 toast.dismiss();
                 Helpers.toast('success', 'Model deleted successfully');
@@ -137,10 +110,7 @@ const UserModel = ({ activeTab, setActiveTab }) => {
     };
 
     const handleSave = async () => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem('token');
-
-        if (!modelName.trim() || !slug.trim() || !selectedCollection || !price.trim() 
+        if (!modelName.trim() || !slug.trim() || !selectedCollection || !price
             || !stock.trim()  || !link.trim() || !benefits.trim()
         || !features.trim())  {
             Helpers.toast('error', 'All fields are required.');
@@ -162,16 +132,8 @@ const UserModel = ({ activeTab, setActiveTab }) => {
 
         try {
             const response = editingModelId ?
-                await axios.post(`${baseUrl}update-model/${editingModelId}`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }) :
-                await axios.post(`${baseUrl}store-models`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                await axios.put(`${Helpers.apiUrl}update-model/${editingModelId}`,formData, Helpers.authHeaders) :
+                await axios.post(`${Helpers.apiUrl}store-models`,formData, Helpers.authHeaders);
 
             if (response.status === 200) {
                 Helpers.toast('success', editingModelId ? 'Model updated successfully' : 'Model created successfully');

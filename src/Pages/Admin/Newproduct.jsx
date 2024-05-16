@@ -21,21 +21,7 @@ function Newproduct() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        const token = localStorage.getItem("token");
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}collects`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("response", response.data.data);
-
+        const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -94,19 +80,8 @@ function Newproduct() {
     formData.append("collection_id", selectedCollectionId);
     if (image) formData.append("image", image); // Append file if selected
 
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
-
     try {
-      const response = await axios.post(`${baseUrl}rolex_models`, formData, {
-        // Adjust the URL as needed
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          // Don't manually set 'Content-Type' for FormData, let the browser set it
-        },
-      });
-
+      const response = await axios.post(`${Helpers.apiUrl}rolex_models`, formData, Helpers.authHeaders);
       if (response.status === 200) {
         Helpers.toast("success","Data Stored Successfully");
         navigate('/admin/products')

@@ -11,18 +11,8 @@ const Store = ({ activeTab, setActiveTab }) => {
     const [editingStoreId, setEditingStoreId] = useState(null);
 
     const handleDelete = async (storeId) => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await axios.delete(`${baseUrl}delete-store/${storeId}`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.delete(`${Helpers.apiUrl}delete-store/${storeId}`, Helpers.authHeaders);
             if (response.status === 200) {
                 toast.dismiss();
                 Helpers.toast("success", "Store Deleted Successfully");
@@ -40,9 +30,6 @@ const Store = ({ activeTab, setActiveTab }) => {
     };
 
     const handleSave = async () => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
         if (!name.trim()) {
             Helpers.toast("error", "Please enter a store name");
             return;
@@ -51,16 +38,7 @@ const Store = ({ activeTab, setActiveTab }) => {
         if (editingStoreId) {
             // Update existing store
             try {
-                const response = await axios.put(`${baseUrl}update-store/${editingStoreId}`, {
-                    name
-                }, {
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
+                const response = await axios.put(`${Helpers.apiUrl}update-store/${editingStoreId}`, { name }, Helpers.authHeaders);
                 if (response.status === 200) {
                     Helpers.toast("success", "Store Updated Successfully");
                     fetchStores();
@@ -75,16 +53,7 @@ const Store = ({ activeTab, setActiveTab }) => {
         } else {
             // Add a new store
             try {
-                const response = await fetch(`${baseUrl}add-store`, {
-                    method: 'POST',
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ name })
-                });
-
+                const response = await axios.post(`${Helpers.apiUrl}add-store`,{ name }, Helpers.authHeaders);
                 if (response.status === 200) {
                     Helpers.toast("success", "Store Saved Successfully");
                     setName("");
@@ -100,16 +69,7 @@ const Store = ({ activeTab, setActiveTab }) => {
 
     const fetchStores = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
-            const response = await axios.get(`${url}fetch-store`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.get(`${Helpers.apiUrl}fetch-store`, Helpers.authHeaders);
             if (response.status === 200) {
                 const fetchedStores = response.data.data || [];
                 setStores(fetchedStores);

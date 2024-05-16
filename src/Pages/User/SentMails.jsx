@@ -20,17 +20,7 @@ function SentMails() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        // console.log("token", token);
-        const response = await axios.get(`${baseUrl}getsentmails`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-    
+        const response = await axios.get(`${Helpers.apiUrl}getsentmails`, Helpers.authHeaders);    
         if (response.status === 200) {
           setMails(response.data.data);
           console.log('ascxv',response.data);

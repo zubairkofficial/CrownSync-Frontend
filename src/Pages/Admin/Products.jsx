@@ -19,21 +19,7 @@ function Products() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}rolex_models`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("response", response.data.data);
-
+        const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -68,20 +54,8 @@ function Products() {
 
   const handleDelete = async (templateId) => {
     if (window.confirm("Are you sure you want to delete this Product?")) {
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.delete(
-          `${baseUrl}rolex_models/${templateId}`,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await axios.delete(`${Helpers.apiUrl}rolex_models/${templateId}`, Helpers.authHeaders);
         if (response.status === 200) {
           console.log("Product deleted successfully");
           // Optionally, refresh your templates list here

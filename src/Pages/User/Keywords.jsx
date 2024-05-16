@@ -9,16 +9,7 @@ const Keywords = ({ activeTab, setActiveTab }) => {
     
     const fetchQueries = async () => {
         try {
-            const url = Helpers.apiUrl;
-            const token = localStorage.getItem("token");
-            const response = await axios.get(`${url}admin/scop_settings`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
+            const response = await axios.get(`${Helpers.apiUrl}admin/scop_settings`, Helpers.authHeaders);
             if (response.status === 200) {
                 const fetchedQueries = response.data.data || [];
                 Helpers.toast('success','Fetched Data Successfully');
@@ -48,22 +39,8 @@ const Keywords = ({ activeTab, setActiveTab }) => {
             Helpers.toast("error", "Please enter a query");
             return;
         }
-
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${baseUrl}admin/scop_settings`, {
-            method: 'POST',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ query }),
-        });
-
+        const response = await axios.post(`${Helpers.apiUrl}admin/scop_settings`,{ query }, Helpers.authHeaders);
         if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
             Helpers.toast('success', "Query Saved Successfully!");
             setQuery("");
             fetchQueries();  // Update the list after successful submission
@@ -73,18 +50,8 @@ const Keywords = ({ activeTab, setActiveTab }) => {
     };
       
       const handleDelete = async (scopeId) => {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-      
         try {
-            const response = await axios.delete(`${baseUrl}admin/scop_settings/${scopeId}`, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-      
+            const response = await axios.delete(`${Helpers.apiUrl}admin/scop_settings/${scopeId}`, Helpers.authHeaders);      
             if (response.status === 200) {
                 // console.log("Deleted successfully");
                 toast.dismiss();

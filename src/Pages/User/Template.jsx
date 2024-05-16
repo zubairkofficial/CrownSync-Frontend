@@ -32,18 +32,7 @@ function Template() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-
-        // Fetch all email messages
-        const response = await axios.get(`${baseUrl}email-messages`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}email-messages`, Helpers.authHeaders);
         if (response.status === 200) {
           // Filter the email messages locally based on messageId
           const emailMessage = response.data.find(
@@ -88,17 +77,7 @@ function Template() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl; // Make sure this is defined
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates`, Helpers.authHeaders);
         if (response.status === 200) {
           setTemplates(response.data.data); // Assuming the data is in the format you expect
         } else {
@@ -134,19 +113,7 @@ function Template() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}rolex_models`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
         console.log("response", response.data.data);
 
         if (response.status === 200) {
@@ -199,21 +166,7 @@ function Template() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}rolex_models`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("response", response.data.data);
-
+        const response = await axios.get(`${Helpers.apiUrl}rolex_models`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -271,21 +224,7 @@ function Template() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        const token = localStorage.getItem("token");
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}collects`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("response", response.data.data);
-
+        const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -352,8 +291,6 @@ function Template() {
   const [resposne, setResponse] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     const username = localStorage.getItem("user");
     const user = JSON.parse(username);
 
@@ -378,14 +315,7 @@ function Template() {
     };
 
     try {
-      const response = await axios.post(`${baseUrl}email-preview`, payload, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.post(`${Helpers.apiUrl}email-preview`, payload, Helpers.authHeaders);
       if (response.status === 200) {
         console.log("Response data:", response.data);
         // console.log("Body:", response.data.body);
@@ -403,23 +333,11 @@ function Template() {
   };
   const handleEmailSend = async (e) => {
     e.preventDefault();
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     const formData = {
       response: resposne,
     };
     try {
-      const response = await axios.post(
-        `${baseUrl}gmail/send-email`,
-        formData,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${Helpers.apiUrl}gmail/send-email`,formData, Helpers.authHeaders);
       if (response.status === 200) {
         console.log(response.data);
         Helpers.toast("success", response.data.message);

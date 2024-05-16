@@ -19,21 +19,7 @@ function Dashboard() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        // console.log("token", token);
-        const response = await axios.get(`${baseUrl}admin/mail_templates`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // console.log("response", response.data.data);
-
+        const response = await axios.get(`${Helpers.apiUrl}admin/mail_templates`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -68,20 +54,8 @@ function Dashboard() {
 
   const handleDelete = async (templateId) => {
     if (window.confirm("Are you sure you want to delete this template?")) {
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.delete(
-          `${baseUrl}admin/mail_templates/${templateId}`,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await axios.delete(`${Helpers.apiUrl}admin/mail_templates/${templateId}`, Helpers.authHeaders);
         if (response.status === 200) {
           console.log("Template deleted successfully");
           // Optionally, refresh your templates list here

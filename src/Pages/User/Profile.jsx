@@ -38,19 +38,12 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = Helpers.apiUrl
-    const token = localStorage.getItem("token"); // Assuming you store your token in localStorage
     try {
-      const response = await axios.post(`${url}update/profile`, { name, address, phone }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-      // console.log('Profile updated:', response.data);
-      Helpers.toast('success', 'Profile Updated Successfully!');
-      window.location.reload();
+      const response = await axios.post(`${Helpers.apiUrl}update/profile`, { name, address, phone }, Helpers.authHeaders);
+      if (response.status === 200) {
+        Helpers.toast('success', 'Profile Updated Successfully!');
+        window.location.reload();
+      }
       // Handle response data with your logic
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -67,15 +60,7 @@ function Profile() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const url = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${url}profile`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${Helpers.apiUrl}profile`, Helpers.authHeaders);
         if (response.status === 200) {
           console.log("API Response:", response.data.data.profile);
 
@@ -94,16 +79,7 @@ function Profile() {
  useEffect(() => {
   const fetchLocations = async () => {
     try {
-      const url = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${url}fetch-locations`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.get(`${Helpers.apiUrl}fetch-locations`, Helpers.authHeaders);
       if (response.status === 200) {
         console.log("API locations:", response.data.data);
         setLocations(response.data.data);
@@ -122,16 +98,7 @@ function Profile() {
 useEffect(() => {
   const fetchStores = async () => {
     try {
-      const url = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${url}fetch-store`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.get(`${Helpers.apiUrl}fetch-store`, Helpers.authHeaders);
       if (response.status === 200) {
         console.log("API stores:", response.data.data);
         setStores(response.data.data);
@@ -168,16 +135,8 @@ useEffect(() => {
   const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('profile', file); // 'profile' is the key expected by your Laravel backend
-
-    const token = localStorage.getItem("token"); // Retrieve your auth token from storage
-    const url = Helpers.apiUrl
     try {
-      const response = await axios.post(`${url}update/profile/pic`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await axios.post(`${Helpers.apiUrl}update/profile/pic`, formData, Helpers.authHeaders);
       console.log('Profile picture updated:', response.data);
       window.location.reload();
       // Handle response here, perhaps showing a success message
@@ -198,20 +157,12 @@ useEffect(() => {
       setMessage("New passwords do not match.");
       return;
     }
-
-    const token = localStorage.getItem("token"); // Adjust how you handle auth tokens as necessary
-    const url = Helpers.apiUrl
     try {
-      const response = await axios.post(`${url}update/password`, {
+      const response = await axios.post(`${Helpers.apiUrl}update/password`, {
         current_password: currentPassword,
         password: newPassword,
         password_confirmation: confirmPassword
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      });
+      }, Helpers.authHeaders);
 
       // Assuming the response includes some message or data
       setMessage(response.data.message || 'Password successfully updated.');
@@ -231,18 +182,8 @@ useEffect(() => {
 
   useEffect(() => {
     const fetchDetail = async () => {
-      const url = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
-
       try {
-        const response = await axios.get(`${url}check-login`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const response = await axios.get(`${Helpers.apiUrl}check-login`, Helpers.authHeaders);
         if (response.status === 200 && response.data.data) {
           console.log("my response:", response.data.data.contact);
           setIsGoogle(response.data.data);

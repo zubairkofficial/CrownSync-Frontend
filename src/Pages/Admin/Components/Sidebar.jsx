@@ -12,9 +12,7 @@ export default function Sidebar() {
   //   navigate("/")
   // };
   const logout = async () => {
-    const token = localStorage.getItem("token");
-    const baseUrl = Helpers.apiUrl;
-  
+    const token = localStorage.getItem("token");  
     // Immediately clear client-side authentication data
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -26,13 +24,7 @@ export default function Sidebar() {
     }
   
     try {
-      const response = await axios.post(`${baseUrl}logout`, {}, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
+      const response = await axios.post(`${Helpers.apiUrl}logout`, Helpers.authHeaders);  
       if (response.status === 200) {
         navigate("/");
       } else {

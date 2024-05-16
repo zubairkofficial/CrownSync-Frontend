@@ -17,21 +17,7 @@ function Models() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const baseUrl = Helpers.apiUrl;
-        // const data = {}; // Your request payload
-        // Retrieve token if needed
-        const token = localStorage.getItem("token");
-        console.log("token", token);
-        const response = await axios.get(`${baseUrl}collects`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("response",response.data.data)
-
+        const response = await axios.get(`${Helpers.apiUrl}collects`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log(response.data.user);
           // Assuming you want to store the emails in state
@@ -66,20 +52,8 @@ function Models() {
 
   const handleDelete = async (templateId) => {
     if (window.confirm("Are you sure you want to delete this Collection?")) {
-      const baseUrl = Helpers.apiUrl;
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.delete(
-          `${baseUrl}collects/${templateId}`,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await axios.delete(`${Helpers.apiUrl}collects/${templateId}`, Helpers.authHeaders);
         if (response.status === 200) {
           console.log("Collection deleted successfully");
           // Optionally, refresh your templates list here

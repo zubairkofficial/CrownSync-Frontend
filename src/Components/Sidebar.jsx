@@ -76,15 +76,7 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const url = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${url}profile`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${Helpers.apiUrl}profile`, Helpers.authHeaders);
         if (response.status === 200) {
           // console.log("API Response:", response.data.data.profile);
           setProfile(response.data.data);
@@ -100,8 +92,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const logout = async () => {
     const token = localStorage.getItem("token");
-    const baseUrl = Helpers.apiUrl;
-
     // Immediately clear client-side authentication data
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -113,17 +103,7 @@ export default function Sidebar() {
     }
 
     try {
-      const response = await axios.post(
-        `${baseUrl}logout`,
-        {},
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await axios.post(`${Helpers.apiUrl}logout`, Helpers.authHeaders);
       if (response.status === 200) {
         navigate("/");
       } else {
@@ -135,38 +115,6 @@ export default function Sidebar() {
   };
   const [isActive, setIsActive] = useState(false);
 
-  // const logout = () => {
-  //   localStorage.removeItem("token"); // Remove token from local storage
-  //   localStorage.removeItem("user"); // Remove token from local storage
-  //   // window.location.href = "/"; // Redirect to the home page
-  //   navigate("/login")
-  // };
-  // const logout = async () => {
-  //   const token = localStorage.getItem("token"); // Retrieve token from local storage
-  //   const baseUrl = Helpers.apiUrl;
-
-  //   try {
-  //     // Send a POST request to logout endpoint with an empty object and the token
-  //     const response = await axios.post(`${baseUrl}logout`, {}, {
-  //       headers: {
-  //         Accept: "application/json",
-  //         'Content-Type': 'application/json', // Ensure Content-Type is set for JSON
-  //         Authorization: `Bearer ${token}`, // Set Authorization header with the token
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // If logout is successful, redirect to the home page
-  //       navigate("/login")
-  //     } else {
-  //       // If logout fails, show a warning message
-  //       Helpers.toast("warning", response.data.message);
-  //     }
-  //   } catch (error) {
-  //     // If an error occurs during logout process, show an error message
-  //     Helpers.toast("error", error.message);
-  //   }
-  // };
 
   return (
     // <div className="nk-sidebar nk-sidebar-fixed" id="sidebar">
@@ -330,7 +278,10 @@ export default function Sidebar() {
           to="/user/Setting"
           className="text-gary-400 group relative rounded-xl p-2 hover:bg-gray-50"
         >
-            <i className="fa-light fa-gear" style={{ fontSize: "20px" }}></i>
+            <i 
+              className="fa-light fa-gear" 
+              style={{ fontSize: "20px", color: "#BBBBBB" }}
+            ></i>
             <div className="absolute inset-y-0 left-12 hidden items-center group-hover:flex">
               <div className="relative whitespace-nowrap rounded-md bg-white px-4 py-2 text-sm text-gray-950 font-semibold drop-shadow-lg">
                 <div className="absolute inset-0 -left-1 flex items-center">

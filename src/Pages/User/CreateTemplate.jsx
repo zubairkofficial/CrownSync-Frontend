@@ -25,22 +25,8 @@ function CreateTemplate() {
             footer,
             links,
         };
-
-        const baseUrl = Helpers.apiUrl;
-        const token = localStorage.getItem("token");
         try {
-            const response = await axios.post(
-                `${baseUrl}admin/mail_templates`,
-                formData,
-                {
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
+            const response = await axios.post(`${Helpers.apiUrl}admin/mail_templates`,formData, Helpers.authHeaders);
             // Check if the status code is within the 2xx success range
             if (response.status >= 200 && response.status < 300) {
                 Helpers.toast("success", "Template Data Stored Successfully");

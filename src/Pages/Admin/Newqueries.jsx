@@ -12,17 +12,8 @@ function Newqueries() {
     const formData = {
       query,
     };
-    const baseUrl = Helpers.apiUrl;
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.post(`${baseUrl}admin/scop_settings`, formData, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await axios.post(`${Helpers.apiUrl}admin/scop_settings`, formData, Helpers.authHeaders);
       if (response.status === 200) {
         console.log("Data submitted successfully");
         Helpers.toast("success","Data Stored Successfully")
