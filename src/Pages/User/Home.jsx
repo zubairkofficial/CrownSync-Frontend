@@ -1090,321 +1090,200 @@ if (user && user.id) {
                   </div>
                   {userNotFound ? (
                     <div>
-                      {/* Uncomment and use the correct login component as needed */}
-                      {/* <GoogleLoginComponent onLoginSuccess={handleLoginSuccess} /> */}
                       <GoogleLoginButton onLoginClick={loginWithGoogle} />
                     </div>
                   ) : (
-                    mails.length === 0 ? (
-                      <>
-                      <div
-                          className="pt-5 d-flex"
-                          style={{ width: "100%", position: "static" }}
-                        >
-                          {/* <div style={{ flex: "1" }}>
-                            <Select
-                              styles={customStyles}
-                              options={mails.length === 0 ? [] : options1}
-                              placeholder="All Users"
-                              onChange={mails.length === 0 ? null : handleMemberChange}
-                              isClearable={true}
-                              style={{ color: "white" }}
-                              isSearchable={true}
-                            />
-                          </div> */}
-                          <div
-                            className="icons flex ml-5"
-                            style={{ flex: "0 0 auto" }}
-                          >
-                            <div onClick={() => handleIconClick("calendar")}>
-                              <i
-                                className="fa-light fa-calendar-range"
-                                style={iconStyle("calendar")}
-                                title="Calendar"
-                                onClick={toggleInputs}
-                              ></i>
-                            </div>
-                            <div onClick={() => handleIconClick("search")}>
-                              <i
-                                className="fa-light fa-magnifying-glass"
-                                style={iconStyle("search")}
-                                title="Search"
-                                onClick={toggleSearchInput}
-                              ></i>
-                            </div>
-                            <div onClick={toggleSortDirection}>
-                              <i
-                                className={`fa-sharp fa-light ${sortDirection === "asc" ? "fa-arrow-up-arrow-down" : "fa-arrow-down-arrow-up"}`}
-                                style={iconStyle("sort")}
-                                title={`Sort ${sortDirection === "asc" ? "Ascending" : "Descending"}`}
-                                onClick={toggleSort}
-                              ></i>
-                            </div>
-                            <div
-                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                              style={{
-                                cursor: "pointer",
-                                color: isFilterActive ? "white" : "#AEAEAE",
-                                backgroundColor: isFilterActive ? "#E2545E" : "transparent",
-                              }}
-                              title="Filter"
-                              onClick={toggleFilter}
-                            >
-                              <i
-                                className="fa-light fa-circle-check"
-                                style={{ fontSize: "15px" }}
-                              ></i>
-                            </div>
-                            <GoogleLoginComponent  />
-                            {/* Uncomment and use the correct login button as needed */}
-                            {/* <div
-                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                              style={{
-                                cursor: "pointer",
-                              }}
-                              title="Connect With Gmail"
-                              onClick={loginWithGoogle}
-                            >
-                              <i
-                                className="fa-light fa-refresh"
-                                style={{ fontSize: "15px", color: "#AEAEAE" }}
-                              ></i>
-                            </div> */}
+                    <>
+                      <div className="pt-5 d-flex" style={{ width: "100%", position: "static" }}>
+                        <div className="icons flex ml-5" style={{ flex: "0 0 auto" }}>
+                          <div onClick={() => handleIconClick("calendar")}>
+                            <i
+                              className="fa-light fa-calendar-range"
+                              style={iconStyle("calendar")}
+                              title="Calendar"
+                              onClick={toggleInputs}
+                            ></i>
                           </div>
+                          <div onClick={() => handleIconClick("search")}>
+                            <i
+                              className="fa-light fa-magnifying-glass"
+                              style={iconStyle("search")}
+                              title="Search"
+                              onClick={toggleSearchInput}
+                            ></i>
+                          </div>
+                          <div onClick={toggleSortDirection}>
+                            <i
+                              className={`fa-sharp fa-light ${
+                                sortDirection === "asc"
+                                  ? "fa-arrow-up-arrow-down"
+                                  : "fa-arrow-down-arrow-up"
+                              }`}
+                              style={iconStyle("sort")}
+                              title={`Sort ${
+                                sortDirection === "asc" ? "Ascending" : "Descending"
+                              }`}
+                              onClick={toggleSort}
+                            ></i>
+                          </div>
+                          <div
+                            className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
+                            style={{
+                              cursor: "pointer",
+                              color: isFilterActive ? "white" : "#AEAEAE",
+                              backgroundColor: isFilterActive ? "#E2545E" : "transparent",
+                            }}
+                            title="Filter"
+                            onClick={toggleFilter}
+                          >
+                            <i
+                              className="fa-light fa-circle-check"
+                              style={{ fontSize: "15px" }}
+                            ></i>
+                          </div>
+                          <GoogleLoginComponent />
                         </div>
-                      <Loader style={{ height: '80vh' }} />
-                      </>
-                    ) : (
-                      <>
-                        <div
-                          className="pt-5 d-flex"
-                          style={{ width: "100%", position: "static" }}
-                        >
-                          {/* <div style={{ flex: "1" }}>
-                            <Select
-                              styles={customStyles}
-                              options={mails.length === 0 ? [] : options1}
-                              placeholder="All Users"
-                              onChange={mails.length === 0 ? null : handleMemberChange}
-                              isClearable={true}
-                              style={{ color: "white" }}
-                              isSearchable={true}
-                            />
-                          </div> */}
-                          <div
-                            className="icons flex ml-5"
-                            style={{ flex: "0 0 auto" }}
-                          >
-                            <div onClick={() => handleIconClick("calendar")}>
-                              <i
-                                className="fa-light fa-calendar-range"
-                                style={iconStyle("calendar")}
-                                title="Calendar"
-                                onClick={toggleInputs}
-                              ></i>
-                            </div>
-                            <div onClick={() => handleIconClick("search")}>
-                              <i
-                                className="fa-light fa-magnifying-glass"
-                                style={iconStyle("search")}
-                                title="Search"
-                                onClick={toggleSearchInput}
-                              ></i>
-                            </div>
-                            <div onClick={toggleSortDirection}>
-                              <i
-                                className={`fa-sharp fa-light ${sortDirection === "asc" ? "fa-arrow-up-arrow-down" : "fa-arrow-down-arrow-up"}`}
-                                style={iconStyle("sort")}
-                                title={`Sort ${sortDirection === "asc" ? "Ascending" : "Descending"}`}
-                                onClick={toggleSort}
-                              ></i>
-                            </div>
-                            <div
-                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                              style={{
-                                cursor: "pointer",
-                                color: isFilterActive ? "white" : "#AEAEAE",
-                                backgroundColor: isFilterActive ? "#E2545E" : "transparent",
-                              }}
-                              title="Filter"
-                              onClick={toggleFilter}
-                            >
-                              <i
-                                className="fa-light fa-circle-check"
-                                style={{ fontSize: "15px" }}
-                              ></i>
-                            </div>
-                            <GoogleLoginComponent  />
-                            {/* Uncomment and use the correct login button as needed */}
-                            {/* <div
-                              className="icon-wrapper rounded p-3 border border-gray-300 ml-2"
-                              style={{
-                                cursor: "pointer",
-                              }}
-                              title="Connect With Gmail"
-                              onClick={loginWithGoogle}
-                            >
-                              <i
-                                className="fa-light fa-refresh"
-                                style={{ fontSize: "15px", color: "#AEAEAE" }}
-                              ></i>
-                            </div> */}
-                          </div>
-                        </div> 
-                        <div className="flex justify-center items-center space-x-4">
-                          {showInputs && (
-                            <div
-                              className="pt-5 d-flex"
-                              style={{ width: "100%" }}
-                            >
-                              <div className="flex" style={{ flex: "1" }}>
-                                <div
-                                  className="p-2 flex"
-                                  style={{ flex: "1" }}
-                                >
-                                  <input
-                                    type="date"
-                                    value={startDate ? startDate.toISOString().substring(0, 10) : ""}
-                                    onChange={(e) =>
-                                      setStartDate(e.target.value ? new Date(e.target.value) : null)
-                                    }
-                                    placeholder="Select start date"
-                                    style={{
-                                      padding: "5%",
-                                      width: "100%",
-                                      borderRadius: "30px",
-                                    }}
-                                  />
-                                </div>
-                                <div className="p-2 flex" style={{ flex: "1" }}>
-                                  <input
-                                    type="date"
-                                    value={endDate ? endDate.toISOString().substring(0, 10) : ""}
-                                    onChange={(e) =>
-                                      setEndDate(e.target.value ? new Date(e.target.value) : null)
-                                    }
-                                    placeholder="Select end date"
-                                    style={{
-                                      padding: "5%",
-                                      width: "100%",
-                                      borderRadius: "30px",
-                                    }}
-                                  />
+                      </div>
+
+                      {mails.length === 0 ? (
+                        <Loader style={{ height: "80vh" }} />
+                      ) : (
+                        <>
+                          <div className="flex justify-center items-center space-x-4">
+                            {showInputs && (
+                              <div className="pt-5 d-flex" style={{ width: "100%" }}>
+                                <div className="flex" style={{ flex: "1" }}>
+                                  <div className="p-2 flex" style={{ flex: "1" }}>
+                                    <input
+                                      type="date"
+                                      value={startDate ? startDate.toISOString().substring(0, 10) : ""}
+                                      onChange={(e) =>
+                                        setStartDate(e.target.value ? new Date(e.target.value) : null)
+                                      }
+                                      placeholder="Select start date"
+                                      style={{
+                                        padding: "5%",
+                                        width: "100%",
+                                        borderRadius: "30px",
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="p-2 flex" style={{ flex: "1" }}>
+                                    <input
+                                      type="date"
+                                      value={endDate ? endDate.toISOString().substring(0, 10) : ""}
+                                      onChange={(e) =>
+                                        setEndDate(e.target.value ? new Date(e.target.value) : null)
+                                      }
+                                      placeholder="Select end date"
+                                      style={{
+                                        padding: "5%",
+                                        width: "100%",
+                                        borderRadius: "30px",
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                          {showSearch && (
-                            <input
-                              type="text"
-                              value={searchTerm}
-                              onChange={(e) => setSearchTerm(e.target.value)}
-                              placeholder="Search mails"
-                              className="search-input-class"
-                              style={{
-                                width: "100%",
-                                padding: "2%",
-                                marginTop: "2%",
-                              }}
-                            />
-                          )}
-                        </div>
-                        {filteredMails.length === 0 && !userNotFound ? (
-                          <div style={{ padding: "25%" }}>
-                            <img
-                              src="/media/no_result_found.png"
-                              alt="No results found"
-                            />
+                            )}
+                            {showSearch && (
+                              <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search mails"
+                                className="search-input-class"
+                                style={{
+                                  width: "100%",
+                                  padding: "2%",
+                                  marginTop: "2%",
+                                }}
+                              />
+                            )}
                           </div>
-                        ) : (
-                          filteredMails.map((mail, index) => (
-                            <div key={mail.detail.headers?.["Message-ID"] || index}>
-                              <ul className="my-5 space-y-3 shadow" style={{ borderRadius: "50px" }}>
-                                <li
-                                  key={mail.detail.id}
-                                  className={`rounded-lg ${
-                                    mail.detail.headers &&
-                                    selectedMailId === mail.detail.headers["Message-ID"]
-                                      ? "selected-outline"
-                                      : ""
-                                  }`}
-                                >
-                                  <Link
-                                    to={`/user/dashboard/${mail.detail.headers?.["Message-ID"]}`}
-                                    className="flex items-center p-3 bg-white text-base font-bold text-gray-900 rounded-lg hover:bg-gray-100 group hover:shadow dark:hover:bg-gray-100 dark:text-white"
-                                    onClick={() => handleToggleDetails(mail.detail.headers?.["Message-ID"])}
-                                  >
-                                    {/* <img
-                                      src="/media/avatars/300-1.jpg"
-                                      alt=""
-                                      className="w-12 h-12 rounded-full"
-                                      style={{
-                                        width: "50px",
-                                        height: "50px",
-                                        borderRadius: "10px",
-                                      }}
-                                    /> */}
-                                    <div className="flex flex-col flex-grow ms-3">
-                                      <div className="flex">
-                                        <span>
-                                          {mail.detail.headers?.From ? mail.detail.headers.From.split(" <")[0] : "Unknown Sender"}
-                                        </span>
-                                        {assignSuccess ? (
-                                          <i
-                                            className="fa-light fa-circle-check"
-                                            style={{
-                                              fontSize: "15px",
-                                              color: "green",
-                                              cursor: "pointer",
-                                              marginLeft: "3%",
-                                              marginTop: "0%",
-                                            }}
-                                          ></i>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
-                                      <small className="text-xs" style={{ color: "#C2C2C2" }}>
-                                        {mail.detail.headers?.Date || ""}
-                                      </small>
-                                      <p
-                                        className="text-xs"
-                                        style={{
-                                          color: "#C2C2C2",
-                                          width: "100%",
-                                        }}
-                                      >
-                                        {mail.detail.headers?.Subject || "No Subject"}
-                                      </p>
-                                    </div>
-                                    <i
-                                      className={`fa-solid ${
-                                        expandedMailId === mail.detail.headers?.["Message-ID"]
-                                          ? "fa-caret-up"
-                                          : "fa-caret-down"
-                                      } ml-auto text-gray-500`}
-                                    ></i>
-                                  </Link>
-                                  {expandedMailId === mail.detail.headers?.["Message-ID"] && (
-                                    <div className="bg-white p-3 rounded-lg">
-                                      <p className="text-xs">
-                                        {"Message:- "}
-                                        {mail.detail.snippet || "No snippet available"}
-                                      </p>
-                                      <p className="text-xs">
-                                        {"Received:- "}
-                                        {mail.detail.headers?.Date || "No date available"}
-                                      </p>
-                                    </div>
-                                  )}
-                                </li>
-                              </ul>
+                          {filteredMails.length === 0 ? (
+                            <div style={{ padding: "25%" }}>
+                              <img src="/media/no_result_found.png" alt="No results found" />
                             </div>
-                          ))
-                        )}
-                      </>
-                    )
+                          ) : (
+                            filteredMails.map((mail, index) => (
+                              <div key={mail.detail.headers?.["Message-ID"] || index}>
+                                <ul className="my-5 space-y-3 shadow" style={{ borderRadius: "50px" }}>
+                                  <li
+                                    key={mail.detail.id}
+                                    className={`rounded-lg ${
+                                      mail.detail.headers &&
+                                      selectedMailId === mail.detail.headers["Message-ID"]
+                                        ? "selected-outline"
+                                        : ""
+                                    }`}
+                                  >
+                                    <Link
+                                      to={`/user/dashboard/${mail.detail.headers?.["Message-ID"]}`}
+                                      className="flex items-center p-3 bg-white text-base font-bold text-gray-900 rounded-lg hover:bg-gray-100 group hover:shadow dark:hover:bg-gray-100 dark:text-white"
+                                      onClick={() => handleToggleDetails(mail.detail.headers?.["Message-ID"])}
+                                    >
+                                      <div className="flex flex-col flex-grow ms-3">
+                                        <div className="flex">
+                                          <span>
+                                            {mail.detail.headers?.From ? mail.detail.headers.From.split(" <")[0] : "Unknown Sender"}
+                                          </span>
+                                          {assignSuccess && (
+                                            <i
+                                              className="fa-light fa-circle-check"
+                                              style={{
+                                                fontSize: "15px",
+                                                color: "green",
+                                                cursor: "pointer",
+                                                marginLeft: "3%",
+                                                marginTop: "0%",
+                                              }}
+                                            ></i>
+                                          )}
+                                        </div>
+                                        <small className="text-xs" style={{ color: "#C2C2C2" }}>
+                                          {mail.detail.headers?.Date || ""}
+                                        </small>
+                                        <p
+                                          className="text-xs"
+                                          style={{
+                                            color: "#C2C2C2",
+                                            width: "100%",
+                                          }}
+                                        >
+                                          {mail.detail.headers?.Subject || "No Subject"}
+                                        </p>
+                                      </div>
+                                      <i
+                                        className={`fa-solid ${
+                                          expandedMailId === mail.detail.headers?.["Message-ID"]
+                                            ? "fa-caret-up"
+                                            : "fa-caret-down"
+                                        } ml-auto text-gray-500`}
+                                      ></i>
+                                    </Link>
+                                    {expandedMailId === mail.detail.headers?.["Message-ID"] && (
+                                      <div className="bg-white p-3 rounded-lg">
+                                        <p className="text-xs">
+                                          {"Message:- "}
+                                          {mail.detail.snippet || "No snippet available"}
+                                        </p>
+                                        <p className="text-xs">
+                                          {"Received:- "}
+                                          {mail.detail.headers?.Date || "No date available"}
+                                        </p>
+                                      </div>
+                                    )}
+                                  </li>
+                                </ul>
+                              </div>
+                            ))
+                          )}
+                        </>
+                      )}
+                    </>
                   )}
+
                 </div>
               </div>
             </div>
